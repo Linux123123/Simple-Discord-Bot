@@ -3,7 +3,6 @@ const fs = require('fs');
 const prompt = require('prompt-sync')({ sigint: true });
 
 let baseConfig = fs.readFileSync('./config.js.example', 'utf8');
-let TOKEN;
 
 const defaultSettings = {
     prefix: '!',
@@ -25,6 +24,10 @@ const settings = new Enmap({
 
 (async function () {
     console.log('Setting Up GuideBot Configuration...');
+    if (fs.existsSync('./config.js')) {
+        console.log('Already been set up!');
+        process.exit(0);
+    }
     await settings.defer;
 
     console.log(

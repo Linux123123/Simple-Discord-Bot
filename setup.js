@@ -23,7 +23,7 @@ const settings = new Enmap({
 });
 
 (async function () {
-    console.log('Setting Up GuideBot Configuration...');
+    console.log('Setting Up Configuration...');
     if (fs.existsSync('./config.js')) {
         console.log('Already been set up!');
         process.exit(0);

@@ -4,7 +4,9 @@
   "description": "Discord Bot",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/nodemon/bin/nodemon.js"
+    "postinstall": "node setup.js",
+    "test": "./node_modules/nodemon/bin/nodemon.js",
+    "start": "node index.js"
   },
   "engines": {
     "node": ">=12"
@@ -25,7 +27,8 @@
     "discord.js": "^12.3.1",
     "enmap": "^5.2.4",
     "moment": "^2.24.0",
-    "moment-duration-format": "^2.3.2"
+    "moment-duration-format": "^2.3.2",
+    "prompt-sync": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

@@ -1,23 +1,33 @@
+const { MessageEmbed } = require('discord.js');
+
 exports.run = async (client, message, args, level) => {
-    // eslint-disable-line no-unused-vars
-    const msg = await message.channel.send('Ping?');
-    msg.edit(
-        `Pong! Latency is ${
-            msg.createdTimestamp - message.createdTimestamp
-        }ms. API Latency is ${Math.round(client.ws.ping)}ms`
-    );
+    const embed = new MessageEmbed()
+        .setTitle('**🏓 PING!**')
+        .setColor(client.config.embed.color)
+        .setTimestamp()
+        .addFields(
+            {
+                name: 'BOT Latency',
+                value: `**${Date.now() - message.createdTimestamp}ms**`,
+            },
+            {
+                name: 'Discord API Latency',
+                value: `**${Math.round(client.ws.ping)}ms**`,
+            }
+        );
+    message.channel.send(embed);
 };
 
 exports.conf = {
     enabled: true,
     guildOnly: false,
-    aliases: [],
+    aliases: ['latency'],
     permLevel: 'User',
 };
 
 exports.help = {
     name: 'ping',
     category: 'Miscelaneous',
-    description: "It like... Pings. Then Pongs. And it's not Ping Pong.",
+    description: 'Bot latency',
     usage: 'ping',
 };

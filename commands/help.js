@@ -1,3 +1,5 @@
+const { MessageEmbed } = require('discord.js');
+
 /*
 The HELP command is used to display every command's name and description
 to the user, so that he may see what commands are available. The help
@@ -23,13 +25,10 @@ exports.run = (client, message, args, level) => {
         // Here we have to get the command names only, and we use that array to get the longest name.
         // This make the help commands "aligned" in the output.
         const commandNames = myCommands.keyArray();
-        const longest = commandNames.reduce(
-            (long, str) => Math.max(long, str.length),
-            0
-        );
 
         let currentCategory = '';
-        let output = `= Command List =\n\n[Use ${message.settings.prefix}help <commandname> for details]\n`;
+        let fields = [];
+        let fieldsNum = 0;
         const sorted = myCommands
             .array()
             .sort((p, c) =>
@@ -43,33 +42,42 @@ exports.run = (client, message, args, level) => {
         sorted.forEach((c) => {
             const cat = c.help.category.toProperCase();
             if (currentCategory !== cat) {
-                output += `\u200b\n== ${cat} ==\n`;
+                if (currentCategory !== '') fieldsNum += 1;
+                fields[fieldsNum] = { name: `${cat}`, value: '' };
                 currentCategory = cat;
             }
-            output += `${message.settings.prefix}${c.help.name}${' '.repeat(
-                longest - c.help.name.length
-            )} :: ${c.help.description}\n`;
+            fields[
+                fieldsNum
+            ].value += `${message.settings.prefix}${c.help.name} - ${c.help.description}\n`;
         });
-        message.channel.send(output, {
-            code: 'asciidoc',
-            split: { char: '\u200b' },
-        });
+        const embed = new MessageEmbed()
+            .setTitle('Command list')
+            .setColor(client.config.embed.color)
+            .setDescription(
+                `**Use ${message.settings.prefix}help <commandname> for details**`
+            )
+            .addFields(fields)
+            .setTimestamp();
+        message.channel.send(embed);
     } else {
         // Show individual command's help.
         let command = args[0];
         if (client.commands.has(command)) {
             command = client.commands.get(command);
             if (level < client.levelCache[command.conf.permLevel]) return;
-            message.channel.send(
-                `= ${command.help.name} = \n${
-                    command.help.description
-                }\nusage:: ${
-                    command.help.usage
-                }\naliases:: ${command.conf.aliases.join(', ')}\n= ${
-                    command.help.name
-                } =`,
-                { code: 'asciidoc' }
-            );
+            const embed = new MessageEmbed()
+                .setTitle('Command list')
+                .setColor(client.config.embed.color)
+                .addFields(
+                    {
+                        name: 'Description:',
+                        value: command.help.description,
+                    },
+                    { name: 'Usage:', value: command.help.usage },
+                    { name: 'Aliases:', value: command.conf.aliases.join(', ') }
+                )
+                .setTimestamp();
+            message.channel.send(embed);
         }
     }
 };

@@ -10,6 +10,7 @@ const defaultSettings = {
     modRole: 'Moderator',
     adminRole: 'Administrator',
     systemNotice: 'true',
+    embedColor: '#ff0000',
     welcomeChannel: 'welcome',
     welcomeMessage:
         'Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D',
@@ -23,11 +24,11 @@ const settings = new Enmap({
 });
 
 (async function () {
-    console.log('Setting Up Configuration...');
     if (fs.existsSync('./config.js')) {
         console.log('Already been set up!');
         process.exit(0);
     }
+    console.log('Setting Up Configuration...');
     await settings.defer;
 
     console.log(

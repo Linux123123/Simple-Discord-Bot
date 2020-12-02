@@ -15,7 +15,7 @@ exports.run = async (client, message, args, level) => {
 
     const embed = new MessageEmbed()
         .setTitle(`Successfully deleted ${amount} messages!`)
-        .setColor(client.config.embed.color)
+        .setColor(message.settings.embedColor)
         .setTimestamp();
 
     message.channel.messages

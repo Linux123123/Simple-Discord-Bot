@@ -67,7 +67,7 @@ exports.run = (client, message, args, level) => {
             if (level < client.levelCache[command.conf.permLevel]) return;
             const embed = new MessageEmbed()
                 .setTitle('Command list')
-                .setColor(client.config.embed.color)
+                .setColor(message.settings.embedColor)
                 .addFields(
                     {
                         name: 'Description:',

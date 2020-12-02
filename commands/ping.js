@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 exports.run = async (client, message, args, level) => {
     const embed = new MessageEmbed()
         .setTitle('**🏓 PING!**')
-        .setColor(client.config.embed.color)
+        .setColor(message.settings.embedColor)
         .setTimestamp()
         .addFields(
             {

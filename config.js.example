@@ -30,10 +30,6 @@ const config = {
         'GUILD_MEMBERS',
     ],
 
-    embed: {
-        color: '#ff0000',
-    },
-
     // PERMISSION LEVEL DEFINITIONS.
     permLevels: [
         // This is the lowest permisison level, this is for non-roled users.

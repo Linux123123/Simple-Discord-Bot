@@ -30,7 +30,7 @@
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "node-fetch": "^2.6.1",
-    "prompt-sync": "^4.2.0",
+    "readline-sync": "^1.4.10",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {

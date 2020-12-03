@@ -1,6 +1,6 @@
 const Enmap = require('enmap');
 const fs = require('fs');
-const prompt = require('prompt-sync')({ sigint: true });
+const reader = require('readline-sync');
 
 let baseConfig = fs.readFileSync('./config.js.example', 'utf8');
 
@@ -37,7 +37,8 @@ const settings = new Enmap({
     );
     await settings.set('default', defaultSettings);
 
-    const TOKEN = prompt('Enter your discord API token: ');
+    console.log('Enter your discord API token: ');
+    const TOKEN = reader.question('');
 
     baseConfig = baseConfig.replace('TOKEN', `${TOKEN}`);
 

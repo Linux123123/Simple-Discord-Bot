@@ -40,7 +40,8 @@ exports.run = async (client, message, args, level) => {
     );
     let intervalId = setInterval(() => {
         if (client.settings.get(message.guild.id, 'reddit') == 'false') {
-            return;
+            clearInterval(intervalId);
+            throw 'Stopping reddit retrievals!';
         }
         fetch(url, options)
             .then((rawData) => {
@@ -57,6 +58,7 @@ exports.run = async (client, message, args, level) => {
                 return res;
             })
             .then((res) => {
+                let image;
                 if (res.data.after == null) {
                     message.reply(
                         'Error retrieving subreddit! Derp. Is it really a real one?'

@@ -6,7 +6,11 @@ exports.run = async (client, message, args, level) => {
         .setColor(message.settings.embedColor)
         .setTimestamp();
     client.settings.set(message.guild.id, 'false', 'reddit');
-    message.channel.send(embed).then((msg) => msg.delete({ timeout: 3000 }));
+    message.channel.bulkDelete(1).then(() => {
+        message.channel
+            .send(embed)
+            .then((msg) => msg.delete({ timeout: 3000 }));
+    });
 };
 
 exports.conf = {

@@ -52,7 +52,7 @@ exports.run = (client, message, args, level) => {
         });
         const embed = new MessageEmbed()
             .setTitle('Command list')
-            .setColor(client.config.embed.color)
+            .setColor(message.settings.embedColor)
             .setDescription(
                 `**Use ${message.settings.prefix}help <commandname> for details**`
             )

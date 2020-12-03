@@ -15,6 +15,7 @@ const defaultSettings = {
     welcomeMessage:
         'Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D',
     welcomeEnabled: 'false',
+    reddit: 'false',
 };
 
 const settings = new Enmap({

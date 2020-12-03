@@ -48,6 +48,7 @@ module.exports = (client) => {
         welcomeMessage:
             'Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D',
         welcomeEnabled: 'false',
+        reddit: 'false',
     };
 
     // getSettings merges the client defaults with the guild settings. guild settings in

@@ -1,5 +1,5 @@
 {
-  "name": "patyciu-kontrole-bot",
+  "name": "Simple-Discord-Bot",
   "version": "1.0.0",
   "description": "Discord Bot",
   "main": "index.js",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Linux123123/patyciu-kontrole-bot.git"
+    "url": "git+https://github.com/Linux123123/Simple-Discord-Bot.git"
   },
   "author": "Linux123123",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Linux123123/patyciu-kontrole-bot/issues"
+    "url": "https://github.com/Linux123123/Simple-Discord-Bot/issues"
   },
-  "homepage": "https://github.com/Linux123123/patyciu-kontrole-bot#readme",
+  "homepage": "https://github.com/Linux123123/Simple-Discord-Bot#readme",
   "dependencies": {
     "better-sqlite3": "^6.0.1",
     "chalk": "^4.0.0",

@@ -22,10 +22,6 @@ exports.run = (client, message, args, level) => {
                       cmd.conf.guildOnly !== true
               );
 
-        // Here we have to get the command names only, and we use that array to get the longest name.
-        // This make the help commands "aligned" in the output.
-        const commandNames = myCommands.keyArray();
-
         let currentCategory = '';
         let fields = [];
         let fieldsNum = 0;

@@ -112,7 +112,7 @@ exports.run = async (client, message, args, level) => {
                     client.logger.error(err);
                 }
             });
-    }, 2 * 1000); // 5 Seconds
+    }, 2 * 1000); // 2 Seconds
 };
 
 exports.conf = {

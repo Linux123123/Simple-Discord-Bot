@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 
-exports.run = async (client, message, args, level) => {
+exports.run = (client, message, args, level) => {
     const user = message.mentions.users.first();
     // Parse Amount
     const amount = !!parseInt(message.content.split(' ')[1])
@@ -12,6 +12,8 @@ exports.run = async (client, message, args, level) => {
             'Must specify a user and amount, or just an amount, of messages to purge!'
         );
     // Fetch 100 messages (will be filtered and lowered up to max amount requested)
+
+    message.channel.bulkDelete(1); // Delete the command sent
 
     const embed = new MessageEmbed()
         .setTitle(`Successfully deleted ${amount} messages!`)

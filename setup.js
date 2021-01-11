@@ -16,6 +16,7 @@ const defaultSettings = {
         'Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D',
     welcomeEnabled: 'false',
     reddit: 'false',
+    musicChannelId: '',
 };
 
 const settings = new Enmap({

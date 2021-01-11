@@ -1,4 +1,5 @@
 const Discord = require('discord.js'); // Load discord.js
+const { Player } = require('discord-player'); // Load discord-player
 const { promisify } = require('util');
 const readdir = promisify(require('fs').readdir);
 const Enmap = require('enmap'); // Load enmap
@@ -10,15 +11,15 @@ const client = new Discord.Client({
     },
 });
 
+client.player = new Player(client); // Load player to client
 client.config = config; // Load config to client
-client.logger = require('./modules/Logger'); // Logger
+client.logger = require('./modules/Logger'); // Load logger to client
 
 require('./modules/functions.js')(client); // Handy functions
 
 client.commands = new Enmap(); // Create enmap collections
 client.aliases = new Enmap();
-
-client.settings = new Enmap({ name: 'settings' }); // Save some per servers settings in database
+client.settings = new Enmap({ name: 'settings' });
 
 const init = async () => {
     // Load commands
@@ -32,12 +33,22 @@ const init = async () => {
 
     // Load events
     const evtFiles = await readdir('./events/');
-    client.logger.log(`Loading a total of ${evtFiles.length} events.`);
+    client.logger.log(`Loading ${evtFiles.length} discord events.`);
     evtFiles.forEach((file) => {
         const eventName = file.split('.')[0];
         client.logger.log(`Loading Event: ${eventName}`);
         const event = require(`./events/${file}`);
         client.on(eventName, event.bind(null, client));
+    });
+
+    // Load player events
+    const playerEvtFiles = await readdir('./playerEvents/');
+    client.logger.log(`Loading ${playerEvtFiles.length} player events.`);
+    playerEvtFiles.forEach((file) => {
+        const eventName = file.split('.')[0];
+        client.logger.log(`Loading Event: ${eventName}`);
+        const event = require(`./playerEvents/${file}`);
+        client.player.on(eventName, event.bind(null, client));
     });
 
     // Generate a cache of client permissions for pretty perm names in commands.

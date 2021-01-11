@@ -49,6 +49,7 @@ module.exports = (client) => {
             'Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D',
         welcomeEnabled: 'false',
         reddit: 'false',
+        musicChannelId: '',
     };
 
     // getSettings merges the client defaults with the guild settings. guild settings in
@@ -152,6 +153,42 @@ module.exports = (client) => {
             if (mod.parent.children[i] === mod) {
                 mod.parent.children.splice(i, 1);
                 break;
+            }
+        }
+        return false;
+    };
+
+    /* Music player funtcions */
+
+    client.musicUserCheck = (client, message, queueNeeded) => {
+        if (!message.member.voice.channel) {
+            message.channel.bulkDelete(1).then(() => {
+                message.channel
+                    .send(`You're not in a voice channel !`)
+                    .then((msg) => msg.delete({ timeout: 3000 }));
+            });
+            return true;
+        }
+        if (
+            message.guild.me.voice.channel &&
+            message.member.voice.channel.id !==
+                message.guild.me.voice.channel.id
+        ) {
+            message.channel.bulkDelete(1).then(() => {
+                message.channel
+                    .send(`You are not in the same voice channel!`)
+                    .then((msg) => msg.delete({ timeout: 3000 }));
+            });
+            return true;
+        }
+        if (queueNeeded) {
+            if (!client.player.getQueue(message)) {
+                message.channel.bulkDelete(1).then(() => {
+                    message.channel
+                        .send(`No music currently playing !`)
+                        .then((msg) => msg.delete({ timeout: 3000 }));
+                });
+                return true;
             }
         }
         return false;

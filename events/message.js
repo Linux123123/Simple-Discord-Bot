@@ -8,6 +8,14 @@ module.exports = async (client, message) => {
         return message.reply(`My prefix is \`${settings.prefix}\``);
     }
 
+    if (message.channel.id === settings.musicChannelId) {
+        if (message.content.indexOf(settings.prefix) !== 0) {
+            message.channel.bulkDelete(1);
+            const args = message.content.trim();
+            client.player.play(message, args, true);
+        }
+    }
+
     if (message.content.indexOf(settings.prefix) !== 0) return; // Ignore without prefix
 
     // Get command and split all the arguments

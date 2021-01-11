@@ -19,7 +19,7 @@ exports.run = async (client, message, args, level) => {
         .then((channel) => {
             client.settings.set(message.guild.id, channel.id, 'musicChannelId');
             channel
-                .send('Queue list:', embed)
+                .send(embed)
                 .then((msg) =>
                     client.settings.set(message.guild.id, msg.id, 'musicMsgId')
                 );

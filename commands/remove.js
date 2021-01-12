@@ -7,6 +7,7 @@ exports.run = async (client, message, args, level) => {
             .then((msg) => msg.delete({ timeout: 3000 }));
         return;
     }
+    let queue = client.player.getQueue(message);
     client.channels.fetch(message.settings.musicChannelId).then((channel) => {
         channel.messages.fetch(message.settings.musicMsgId).then((msg) => {
             msg.edit(client.queueMessage(queue));

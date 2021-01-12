@@ -1,5 +1,6 @@
 exports.run = async (client, message, args, level) => {
     if (client.musicUserCheck(client, message, true)) return;
+    let queue = client.player.getQueue(message);
     client.channels.fetch(message.settings.musicChannelId).then((channel) => {
         channel.messages.fetch(message.settings.musicMsgId).then((msg) => {
             msg.edit(client.queueMessage(queue));

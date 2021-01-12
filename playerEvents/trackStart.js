@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 
-module.exports = (client, message, track) => {
+module.exports = (client, message, track, queue) => {
     client.channels.fetch(message.settings.musicChannelId).then((channel) => {
         channel.messages.fetch(message.settings.musicMsgId).then((msg) => {
             const embed = new MessageEmbed()
@@ -14,7 +14,7 @@ module.exports = (client, message, track) => {
                 .setAuthor(track.author)
                 .setFooter(`Requested by ${track.requestedBy.username}`)
                 .setColor(message.settings.embedColor);
-            msg.edit(embed);
+            msg.edit(client.queueMessage(queue), embed);
         });
     });
 };

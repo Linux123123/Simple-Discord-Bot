@@ -1,4 +1,5 @@
 module.exports = (client, error, message) => {
+    client.clearBanner(client, message);
     switch (error) {
         case 'NotPlaying':
             message.channel.send('Music is not being played on this server !');

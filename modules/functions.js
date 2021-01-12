@@ -1,3 +1,5 @@
+const { MessageEmbed } = require('discord.js');
+
 module.exports = (client) => {
     /*
   PERMISSION LEVEL FUNCTION
@@ -192,6 +194,35 @@ module.exports = (client) => {
             }
         }
         return false;
+    };
+
+    client.clearBanner = (client, message) => {
+        client.channels
+            .fetch(message.settings.musicChannelId)
+            .then((channel) => {
+                channel.messages
+                    .fetch(message.settings.musicMsgId)
+                    .then((msg) => {
+                        const embed = new MessageEmbed()
+                            .setTitle('No song playing currently')
+                            .setImage(
+                                'https://bestbots.today/wp-content/uploads/2020/04/Music.png'
+                            )
+                            .setFooter(
+                                `Prefix for this server is: ${message.settings.prefix}`
+                            )
+                            .setColor(message.settings.embedColor);
+                        msg.edit('Queue:\n', embed);
+                    });
+            });
+    };
+
+    client.queueMessage = (queue) => {
+        let text = 'Queue:\n';
+        for (let i = 1; i < queue.tracks.length; i++) {
+            text += `${i}. ${queue.tracks[i].title}\n`;
+        }
+        return text;
     };
 
     /* MISCELANEOUS NON-CRITICAL FUNCTIONS */

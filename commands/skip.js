@@ -1,5 +1,10 @@
 exports.run = async (client, message, args, level) => {
     if (client.musicUserCheck(client, message, true)) return;
+    client.channels.fetch(message.settings.musicChannelId).then((channel) => {
+        channel.messages.fetch(message.settings.musicMsgId).then((msg) => {
+            msg.edit(client.queueMessage(queue));
+        });
+    });
     client.player.skip(message);
     message.channel.bulkDelete(1).then(() => {
         message.channel

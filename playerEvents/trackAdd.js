@@ -1,7 +1,5 @@
-module.exports = (client, message, queue, track) => {
-    client.channels.fetch(message.settings.musicChannelId).then((channel) => {
-        channel.messages.fetch(message.settings.musicMsgId).then((msg) => {
-            msg.edit(client.queueMessage(queue));
-        });
-    });
+module.exports = async (client, message, queue, track) => {
+    let channel = await client.channels.fetch(message.settings.musicChannelId);
+    let msg = await channel.messages.fetch(message.settings.musicMsgId);
+    msg.edit(client.queueMessage(queue));
 };

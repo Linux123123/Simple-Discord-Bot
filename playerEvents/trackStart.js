@@ -2,9 +2,6 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = async (client, message, track, queue) => {
     try {
-        let lyricsChannel = await client.channels.fetch(
-            message.settings.lyricsChannelId
-        );
         let channel = await client.channels.fetch(
             message.settings.musicChannelId
         );

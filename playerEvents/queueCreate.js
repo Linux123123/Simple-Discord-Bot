@@ -10,6 +10,7 @@ module.exports = async (client, message) => {
     }
     const filter = (reaction, user) => user.id !== message.client.user.id;
     var musicReactCollector = msg.createReactionCollector(filter);
+    client.player.getQueue(message).collector = musicReactCollector;
     musicReactCollector.on('collect', (reaction, user) => {
         switch (reaction.emoji.name) {
             case '⏭':
@@ -54,4 +55,6 @@ module.exports = async (client, message) => {
                 break;
         }
     });
+
+    musicReactCollector.on('end', () => {});
 };

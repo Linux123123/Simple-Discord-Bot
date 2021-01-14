@@ -2,9 +2,9 @@ module.exports = async (client, message) => {
     let channel = await client.channels.fetch(message.settings.musicChannelId);
     let msg = await channel.messages.fetch(message.settings.musicMsgId);
     try {
+        await msg.react('⏹');
         await msg.react('⏯');
         await msg.react('⏭');
-        await msg.react('⏹');
     } catch (error) {
         client.logger.error(error);
     }

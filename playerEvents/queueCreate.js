@@ -17,7 +17,7 @@ module.exports = async (client, message) => {
                 client.player.skip(message);
                 reaction.users.remove(user).catch(console.error);
                 message.channel
-                    .send(`${user} ⏩ skipped the song !`)
+                    .send(`${user.username} ⏩ skipped the song !`)
                     .then((msg) => msg.delete({ timeout: 3000 }))
                     .catch(console.error);
                 break;
@@ -27,7 +27,7 @@ module.exports = async (client, message) => {
                 if (!client.player.getQueue(message).paused) {
                     client.player.pause(message);
                     message.channel
-                        .send(`${user} ⏸ paused the music !`)
+                        .send(`${user.username} ⏸ paused the music !`)
                         .then((msg) => msg.delete({ timeout: 3000 }))
                         .catch(console.error);
                 } else {
@@ -43,7 +43,7 @@ module.exports = async (client, message) => {
                 reaction.users.remove(user).catch(console.error);
                 client.player.stop(message);
                 message.channel
-                    .send(`${user} ⏹ stopped the music!`)
+                    .send(`${user.username} ⏹ stopped the music!`)
                     .then((msg) => msg.delete({ timeout: 3000 }))
                     .catch(console.error);
                 musicReactCollector.stop();

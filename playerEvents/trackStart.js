@@ -1,11 +1,27 @@
 const { MessageEmbed } = require('discord.js');
+const { LyriksClient } = require('lyriks.js');
 
 module.exports = async (client, message, track, queue) => {
     try {
+        let lyricsChannel = await client.channels.fetch(
+            message.settings.lyricsChannelId
+        );
         let channel = await client.channels.fetch(
             message.settings.musicChannelId
         );
         let msg = await channel.messages.fetch(message.settings.musicMsgId);
+        const lyriksClient = new LyriksClient();
+        let lyrik = await lyriksClient.getLyrics(track.title);
+        if (lyrik) {
+            let songLyrics = await lyrik.getContent();
+            const lyrics = new MessageEmbed()
+                .setTitle(track.title)
+                .setDescription(songLyrics)
+                .setURL(track.url)
+                .setAuthor(track.author)
+                .setColor(message.settings.embedColor);
+            lyricsChannel.send(lyrics);
+        }
         const embed = new MessageEmbed()
             .setTitle(track.title)
             .setURL(track.url)

@@ -11,6 +11,28 @@ const config = {
     // Your Bot's Token. Available on https://discord.com/developers/applications/me
     token: 'TOKEN',
 
+    // Filters
+    filters: [
+        '8D',
+        'gate',
+        'haas',
+        'phaser',
+        'treble',
+        'tremolo',
+        'vibrato',
+        'reverse',
+        'karaoke',
+        'flanger',
+        'mcompand',
+        'pulsator',
+        'subboost',
+        'bassboost',
+        'vaporwave',
+        'nightcore',
+        'normalizer',
+        'surrounding',
+    ],
+
     // Intents the bot needs.
     intents: [
         'GUILDS',

@@ -2,6 +2,7 @@ exports.run = async (client, message, args, level) => {
     if (client.musicUserCheck(client, message, true)) return;
     client.player.setRepeatMode(message, false);
     client.player.stop(message);
+    client.player.getQueue(message).collector.stop();
     client.clearBanner(client, message);
     message.channel.bulkDelete(1).then(() => {
         message.channel

@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Linux123123/Simple-Discord-Bot#readme",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
+    "@raflymln/musixmatch-lyrics": "^1.0.1",
     "better-sqlite3": "^6.0.1",
     "chalk": "^4.0.0",
     "discord-player": "^3.2.1",

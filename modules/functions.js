@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const Musixmatch = require('@raflymln/musixmatch-lyrics');
 
 module.exports = (client) => {
     /*
@@ -53,6 +54,7 @@ module.exports = (client) => {
         reddit: 'false',
         musicChannelId: '',
         musicMsgId: '',
+        lyricsChannelId: '',
     };
 
     // getSettings merges the client defaults with the guild settings. guild settings in
@@ -219,6 +221,15 @@ module.exports = (client) => {
             text += `${i}. ${queue.tracks[i].title}\n`;
         }
         return text;
+    };
+
+    client.lyrics = async (songname) => {
+        try {
+            let lyrics = await Musixmatch.find(songname);
+            return await lyrics.lyrics;
+        } catch (e) {
+            return e;
+        }
     };
 
     /* MISCELANEOUS NON-CRITICAL FUNCTIONS */

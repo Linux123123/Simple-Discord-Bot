@@ -18,6 +18,7 @@ const defaultSettings = {
     reddit: 'false',
     musicChannelId: '',
     musicMsgId: '',
+    lyricsChannelId: '',
 };
 
 const settings = new Enmap({

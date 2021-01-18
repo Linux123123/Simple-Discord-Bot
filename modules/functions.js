@@ -52,6 +52,7 @@ module.exports = (client) => {
         welcomeEnabled: 'false',
         reddit: 'false',
         musicChannelId: '',
+        musicMsgId: '',
     };
 
     // getSettings merges the client defaults with the guild settings. guild settings in

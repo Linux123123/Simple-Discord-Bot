@@ -3,8 +3,7 @@ const { Player } = require('discord-player'); // Load discord-player
 const { promisify } = require('util');
 const readdir = promisify(require('fs').readdir);
 const Enmap = require('enmap'); // Load enmap
-const config = require('./config.js'); // Load config
-
+import config from './config';
 const client = new Discord.Client({
     ws: {
         intents: config.intents,

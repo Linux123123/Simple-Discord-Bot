@@ -34,7 +34,6 @@ module.exports = async (client, message, track, queue) => {
             let index = track.title.toLowerCase().search(/\bofficial\b/);
             song = track.title.slice(0, index - 1).trim();
         } else song = track.title;
-        console.log(song);
         const lyricsEmbed = new MessageEmbed()
             .setTitle(track.title)
             .setDescription(await client.lyrics(song))

@@ -1,17 +1,31 @@
-const { MessageEmbed } = require('discord.js');
-const Musixmatch = require('@raflymln/musixmatch-lyrics');
+import { Guild, Message } from 'discord.js';
+import { Bot } from '../client/client';
+import { Command } from '../interfaces/Command';
+import { GuildSettings } from '../interfaces/GuildSettings';
+// const Musixmatch = require('@raflymln/musixmatch-lyrics');
 
-module.exports = (client) => {
-    /*
-  PERMISSION LEVEL FUNCTION
+// THIS IS HERE BECAUSE SOME PEOPLE DELETE ALL THE GUILD SETTINGS
+// And then they're stuck because the default settings are also gone.
+// So if you do that, you're resetting your defaults. Congrats.
 
-  This is a very basic permission system for commands which uses "levels"
-  "spaces" are intentionally left black so you can add them if you want.
-  NEVER GIVE ANYONE BUT OWNER THE LEVEL 10! By default this can run any
-  command including the VERY DANGEROUS `eval` and `exec` commands!
+export const defaultSettings: GuildSettings = {
+    prefix: '!',
+    adminRole: 'Administrator',
+    modRole: 'Moderator',
+    embedColor: '#ff0000',
+    welcomeChannel: 'welcome',
+    welcomeMessage:
+        'Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D',
+    welcomeEnabled: 'false',
+    reddit: 'false',
+    musicChannelId: '',
+    musicMsgId: '',
+    lyricsChannelId: '',
+};
 
-  */
-    client.permlevel = (message) => {
+export const Functions = {
+    /* PERMISSION LEVEL FUNCTION */
+    permlevel: (client: Bot, message: Message) => {
         let permlvl = 0;
 
         const permOrder = client.config.permLevels
@@ -19,69 +33,35 @@ module.exports = (client) => {
             .sort((p, c) => (p.level < c.level ? 1 : -1));
 
         while (permOrder.length) {
-            const currentLevel = permOrder.shift();
-            if (message.guild && currentLevel.guildOnly) continue;
+            const currentLevel = permOrder.shift()!;
             if (currentLevel.check(message)) {
                 permlvl = currentLevel.level;
                 break;
             }
         }
         return permlvl;
-    };
-
-    /*
-  GUILD SETTINGS FUNCTION
-
-  This function merges the default settings (from config.defaultSettings) with any
-  guild override you might have for particular guild. If no overrides are present,
-  the default settings are used.
-
-  */
-
-    // THIS IS HERE BECAUSE SOME PEOPLE DELETE ALL THE GUILD SETTINGS
-    // And then they're stuck because the default settings are also gone.
-    // So if you do that, you're resetting your defaults. Congrats.
-    const defaultSettings = {
-        prefix: '!',
-        modLogChannel: 'mod-log',
-        modRole: 'Moderator',
-        adminRole: 'Administrator',
-        systemNotice: 'true',
-        welcomeChannel: 'welcome',
-        welcomeMessage:
-            'Say hello to {{user}}, everyone! We all need a warm welcome sometimes :D',
-        welcomeEnabled: 'false',
-        reddit: 'false',
-        musicChannelId: '',
-        musicMsgId: '',
-        lyricsChannelId: '',
-    };
+    },
+    /* GUILD SETTINGS FUNCTION */
 
     // getSettings merges the client defaults with the guild settings. guild settings in
     // enmap should only have *unique* overrides that are different from defaults.
-    client.getSettings = (guild) => {
+    getSettings: (client: Bot, guild: Guild): GuildSettings => {
         client.settings.ensure('default', defaultSettings);
-        if (!guild) return client.settings.get('default');
+        if (!guild) return client.settings.get('default')!;
         const guildConf = client.settings.get(guild.id) || {};
-        // This "..." thing is the "Spread Operator". It's awesome!
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
-        return { ...client.settings.get('default'), ...guildConf };
-    };
+        return { ...client.settings.get('default')!, ...guildConf };
+    },
 
     /*
-  SINGLE-LINE AWAITMESSAGE
-
-  A simple way to grab a single reply, from the user that initiated
-  the command. Useful to get "precisions" on certain things...
-
-  USAGE
-
-  const response = await client.awaitReply(msg, "Favourite Color?");
-  msg.reply(`Oh, I really love ${response} too!`);
-
-  */
-    client.awaitReply = async (msg, question, limit = 60000) => {
-        const filter = (m) => m.author.id === msg.author.id;
+    SINGLE-LINE AWAITMESSAGE
+    A simple way to grab a single reply, from the user that initiated
+    the command. Useful to get "precisions" on certain things...
+    USAGE
+    const response = await client.awaitReply(msg, "Favourite Color?");
+    msg.reply(`Oh, I really love ${response} too!`);
+    */
+    awaitReply: async (msg: Message, question: string, limit = 60000) => {
+        const filter = (m: Message) => m.author.id === msg.author.id;
         await msg.channel.send(question);
         try {
             const collected = await msg.channel.awaitMessages(filter, {
@@ -89,21 +69,19 @@ module.exports = (client) => {
                 time: limit,
                 errors: ['time'],
             });
-            return collected.first().content;
+            return collected.first()!.content;
         } catch (e) {
             return false;
         }
-    };
-
+    },
     /*
-  MESSAGE CLEAN FUNCTION
-
-  "Clean" removes @everyone pings, as well as tokens, and makes code blocks
-  escaped so they're shown more easily. As a bonus it resolves promises
-  and stringifies objects!
-  This is mostly only used by the Eval and Exec commands.
-  */
-    client.clean = async (client, text) => {
+    MESSAGE CLEAN FUNCTION
+    "Clean" removes @everyone pings, as well as tokens, and makes code blocks
+    escaped so they're shown more easily. As a bonus it resolves promises
+    and stringifies objects!
+    This is mostly only used by the Eval and Exec commands.
+    */
+    clean: async (client: Bot, text: any) => {
         if (text && text.constructor.name == 'Promise') text = await text;
         if (typeof text !== 'string')
             text = require('util').inspect(text, { depth: 1 });
@@ -117,167 +95,116 @@ module.exports = (client) => {
             );
 
         return text;
-    };
+    },
 
-    client.loadCommand = (commandName) => {
+    loadCommand: async (client: Bot, commandName: string): Promise<void> => {
         try {
-            client.logger.log(`Loading Command: ${commandName}`);
-            const props = require(`../commands/${commandName}`);
-            if (props.init) {
-                props.init(client);
-            }
-            client.commands.set(props.help.name, props);
+            client.logger(
+                `Loading Command: ${commandName.split('/')[8].split('.')[0]}`
+            );
+            const props: Command = await import(commandName);
+            client.commands.set(props.name, props);
             props.conf.aliases.forEach((alias) => {
-                client.aliases.set(alias, props.help.name);
+                client.aliases.set(alias, props.name);
             });
-            return false;
         } catch (e) {
-            return `Unable to load command ${commandName}: ${e}`;
+            client.logger(
+                `Unable to load command ${commandName}: ${e}`,
+                'error'
+            );
         }
-    };
+    },
 
-    client.unloadCommand = async (commandName) => {
+    unloadCommand: async (client: Bot, commandName: string) => {
         let command;
         if (client.commands.has(commandName)) {
             command = client.commands.get(commandName);
         } else if (client.aliases.has(commandName)) {
-            command = client.commands.get(client.aliases.get(commandName));
+            command = client.commands.get(client.aliases.get(commandName)!);
         }
         if (!command)
             return `The command \`${commandName}\` doesn"t seem to exist, nor is it an alias. Try again!`;
-
-        if (command.shutdown) {
-            await command.shutdown(client);
-        }
         const mod =
-            require.cache[require.resolve(`../commands/${command.help.name}`)];
-        delete require.cache[
-            require.resolve(`../commands/${command.help.name}.js`)
-        ];
-        for (let i = 0; i < mod.parent.children.length; i++) {
-            if (mod.parent.children[i] === mod) {
-                mod.parent.children.splice(i, 1);
+            require.cache[require.resolve(`../commands/${command.name}`)];
+        delete require.cache[require.resolve(`../commands/${command.name}.js`)];
+        for (let i = 0; i < mod!.parent!.children.length; i++) {
+            if (mod!.parent!.children[i] === mod) {
+                mod.parent!.children.splice(i, 1);
                 break;
             }
         }
         return false;
-    };
+    },
 
     /* Music player funtcions */
 
-    client.musicUserCheck = (client, message, queueNeeded) => {
-        if (!message.member.voice.channel) {
-            message.channel.bulkDelete(1).then(() => {
-                message.channel
-                    .send(`You're not in a voice channel !`)
-                    .then((msg) => msg.delete({ timeout: 3000 }));
-            });
-            return true;
-        }
-        if (
-            message.guild.me.voice.channel &&
-            message.member.voice.channel.id !==
-                message.guild.me.voice.channel.id
-        ) {
-            message.channel.bulkDelete(1).then(() => {
-                message.channel
-                    .send(`You are not in the same voice channel!`)
-                    .then((msg) => msg.delete({ timeout: 3000 }));
-            });
-            return true;
-        }
-        if (queueNeeded) {
-            if (!client.player.getQueue(message)) {
-                message.channel.bulkDelete(1).then(() => {
-                    message.channel
-                        .send(`No music currently playing !`)
-                        .then((msg) => msg.delete({ timeout: 3000 }));
-                });
-                return true;
-            }
-        }
-        return false;
-    };
+    // client.musicUserCheck = (client, message, queueNeeded) => {
+    //     if (!message.member.voice.channel) {
+    //         message.channel.bulkDelete(1).then(() => {
+    //             message.channel
+    //                 .send(`You're not in a voice channel !`)
+    //                 .then((msg) => msg.delete({ timeout: 3000 }));
+    //         });
+    //         return true;
+    //     }
+    //     if (
+    //         message.guild.me.voice.channel &&
+    //         message.member.voice.channel.id !==
+    //             message.guild.me.voice.channel.id
+    //     ) {
+    //         message.channel.bulkDelete(1).then(() => {
+    //             message.channel
+    //                 .send(`You are not in the same voice channel!`)
+    //                 .then((msg) => msg.delete({ timeout: 3000 }));
+    //         });
+    //         return true;
+    //     }
+    //     if (queueNeeded) {
+    //         if (!client.player.getQueue(message)) {
+    //             message.channel.bulkDelete(1).then(() => {
+    //                 message.channel
+    //                     .send(`No music currently playing !`)
+    //                     .then((msg) => msg.delete({ timeout: 3000 }));
+    //             });
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // };
 
-    client.clearBanner = async (client, message) => {
-        let channel = await client.channels.fetch(
-            message.settings.musicChannelId
-        );
-        let msg = await channel.messages.fetch(message.settings.musicMsgId);
+    // client.clearBanner = async (client, message) => {
+    //     let channel = await client.channels.fetch(
+    //         message.settings.musicChannelId
+    //     );
+    //     let msg = await channel.messages.fetch(message.settings.musicMsgId);
 
-        const embed = new MessageEmbed()
-            .setTitle('No song playing currently')
-            .setImage(
-                'https://bestbots.today/wp-content/uploads/2020/04/Music.png'
-            )
-            .setFooter(`Prefix for this server is: ${message.settings.prefix}`)
-            .setColor(message.settings.embedColor);
-        msg.edit('Queue:\n', embed);
-    };
+    //     const embed = new MessageEmbed()
+    //         .setTitle('No song playing currently')
+    //         .setImage(
+    //             'https://bestbots.today/wp-content/uploads/2020/04/Music.png'
+    //         )
+    //         .setFooter(`Prefix for this server is: ${message.settings.prefix}`)
+    //         .setColor(message.settings.embedColor);
+    //     msg.edit('Queue:\n', embed);
+    // };
 
-    client.queueMessage = (queue) => {
-        let text = 'Queue:\n';
-        for (let i = queue.tracks.length - 1; i >= 1; i--) {
-            text += `${i}. ${queue.tracks[i].title}\n`;
-        }
-        return text;
-    };
+    // client.queueMessage = (queue) => {
+    //     let text = 'Queue:\n';
+    //     for (let i = queue.tracks.length - 1; i >= 1; i--) {
+    //         text += `${i}. ${queue.tracks[i].title}\n`;
+    //     }
+    //     return text;
+    // };
 
-    client.lyrics = async (songname) => {
-        try {
-            let lyrics = await Musixmatch.find(songname);
-            return await lyrics.lyrics;
-        } catch (e) {
-            return e;
-        }
-    };
-
-    /* MISCELANEOUS NON-CRITICAL FUNCTIONS */
-
-    // EXTENDING NATIVE TYPES IS BAD PRACTICE. Why? Because if JavaScript adds this
-    // later, this conflicts with native code. Also, if some other lib you use does
-    // this, a conflict also occurs. KNOWING THIS however, the following 2 methods
-    // are, we feel, very useful in code.
-
-    // <String>.toPropercase() returns a proper-cased string such as:
-    // "Mary had a little lamb".toProperCase() returns "Mary Had A Little Lamb"
-    Object.defineProperty(String.prototype, 'toProperCase', {
-        value: function () {
-            return this.replace(
-                /([^\W_]+[^\s-]*) */g,
-                (txt) =>
-                    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-            );
-        },
-    });
-
-    // <Array>.random() returns a single random element from an array
-    // [1, 2, 3, 4, 5].random() can return 1, 2, 3, 4 or 5.
-    Object.defineProperty(Array.prototype, 'random', {
-        value: function () {
-            return this[Math.floor(Math.random() * this.length)];
-        },
-    });
+    // client.lyrics = async (songname) => {
+    //     try {
+    //         let lyrics = await Musixmatch.find(songname);
+    //         return await lyrics.lyrics;
+    //     } catch (e) {
+    //         return e;
+    //     }
+    // };
 
     // `await client.wait(1000);` to "pause" for 1 second.
-    client.wait = require('util').promisify(setTimeout);
-
-    // These 2 process methods will catch exceptions and give *more details* about the error and stack trace.
-    process.on('uncaughtException', (err) => {
-        if (!err || !err.stack) return;
-        const errorMsg = err.stack.replace(
-            new RegExp(`${__dirname}/`, 'g'),
-            './'
-        );
-        client.logger.error(`Uncaught Exception: ${errorMsg}`);
-        console.error(err);
-        // Always best practice to let the code crash on uncaught exceptions.
-        // Because you should be catching them anyway.
-        process.exit(1);
-    });
-
-    process.on('unhandledRejection', (err) => {
-        client.logger.error(`Unhandled rejection: ${err}`);
-        console.error(err);
-    });
+    wait: require('util').promisify(setTimeout),
 };

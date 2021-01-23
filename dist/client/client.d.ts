@@ -15,7 +15,7 @@ declare class Bot extends Client {
     functions: {
         permlevel: (client: Bot, message: import("discord.js").Message) => number;
         getSettings: (client: Bot, guild: import("discord.js").Guild) => GuildSettings;
-        awaitReply: (msg: import("discord.js").Message, question: string, limit?: number) => Promise<string | false>;
+        awaitReply: (msg: import("discord.js").Message, question: string, limit?: number) => Promise<string>;
         clean: (client: Bot, text: any) => Promise<any>;
         loadCommand: (client: Bot, commandName: string) => Promise<void>;
         unloadCommand: (client: Bot, commandName: string) => Promise<string | false>;

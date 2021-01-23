@@ -6,9 +6,8 @@ export declare const conf: {
     permLevel: string;
 };
 export declare const help: {
-    name: string;
     category: string;
     description: string;
     usage: string;
 };
-//# sourceMappingURL=ping.d.ts.map
+//# sourceMappingURL=set.d.ts.map

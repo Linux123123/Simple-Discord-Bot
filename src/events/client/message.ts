@@ -3,7 +3,7 @@ import { RunFunction } from '../../interfaces/Event';
 
 export const name: string = 'message';
 export const run: RunFunction = async (client, message: Message) => {
-    if (message.author.bot) return; // Don't listen to yourself
+    if (message.author.bot || !message.guild) return; // Don't listen to yourself
 
     const settings = (message.settings = client.functions.getSettings(
         client,
@@ -66,13 +66,6 @@ export const run: RunFunction = async (client, message: Message) => {
         })`);
     }
 
-    // Assign author perms level to level
-    message.author.permLevel = level;
-
-    message.flags = [];
-    while (args[0] && args[0][0] === '-') {
-        message.flags.push(args.shift().slice(1));
-    }
     // If the command exists, **AND** the user has permission, run it.
     client.logger(
         `${client.config.permLevels.find((l) => l.level === level)!.name} ${

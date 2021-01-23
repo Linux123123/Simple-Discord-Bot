@@ -22,7 +22,6 @@ const run = async (client, message, args, level) => {
 exports.run = run;
 exports.name = 'ping';
 exports.conf = {
-    enabled: true,
     aliases: ['latency'],
     permLevel: 'User',
 };

@@ -1,10 +1,9 @@
 import { Bot } from '../client/client';
 import { Message } from 'discord.js';
 export interface RunFunction {
-    (client: Bot, message: Message, args: string[], level?: number): Promise<unknown>;
+    (client: Bot, message: Message, args: string[], level: number): Promise<unknown>;
 }
 export interface confObject {
-    enabled: boolean;
     aliases: string[];
     permLevel: string;
 }

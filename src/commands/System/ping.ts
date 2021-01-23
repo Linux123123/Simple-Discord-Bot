@@ -21,7 +21,6 @@ export const run: RunFunction = async (client, message, args, level) => {
 export const name: string = 'ping';
 
 export const conf = {
-    enabled: true,
     aliases: ['latency'],
     permLevel: 'User',
 };

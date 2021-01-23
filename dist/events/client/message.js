@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = exports.name = void 0;
 exports.name = 'message';
 const run = async (client, message) => {
-    if (message.author.bot)
+    if (message.author.bot || !message.guild)
         return;
     const settings = (message.settings = client.functions.getSettings(client, message.guild));
     const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
@@ -29,11 +29,6 @@ const run = async (client, message) => {
             .send(`You do not have permission to use this command.
   Your permission level is ${level} (${client.config.permLevels.find((l) => l.level === level).name})
   This command requires level ${client.levelCache[cmd.conf.permLevel]} (${cmd.conf.permLevel})`);
-    }
-    message.author.permLevel = level;
-    message.flags = [];
-    while (args[0] && args[0][0] === '-') {
-        message.flags.push(args.shift().slice(1));
     }
     client.logger(`${client.config.permLevels.find((l) => l.level === level).name} ${message.author.username} (${message.author.id}) ran command ${cmd.name}`, 'cmd');
     cmd.run(client, message, args, level);

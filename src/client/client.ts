@@ -37,7 +37,7 @@ class Bot extends Client {
         });
         eventFiles.map(async (eventFile: string) => {
             const ev = (await import(eventFile)) as Event;
-            if (!ev.name) return;
+            this.logger(`Loading Event: ${ev.name}`);
             this.events.set(ev.name, ev);
             (ev.emitter || this).on(ev.name, ev.run.bind(null, this));
         });

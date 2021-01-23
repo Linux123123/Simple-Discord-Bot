@@ -51,8 +51,7 @@ class Bot extends discord_js_1.Client {
         });
         eventFiles.map(async (eventFile) => {
             const ev = (await Promise.resolve().then(() => __importStar(require(eventFile))));
-            if (!ev.name)
-                return;
+            this.logger(`Loading Event: ${ev.name}`);
             this.events.set(ev.name, ev);
             (ev.emitter || this).on(ev.name, ev.run.bind(null, this));
         });

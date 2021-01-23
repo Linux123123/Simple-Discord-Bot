@@ -1,5 +1,5 @@
 export interface GuildSettings {
-    prefix: string;
+    [prefix: string]: string;
     adminRole: string;
     modRole: string;
     embedColor: string;

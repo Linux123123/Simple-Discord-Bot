@@ -14,7 +14,7 @@ const settings = new enmap_1.default({
     ensureProps: true,
 });
 (async function () {
-    if (fs_1.default.existsSync('./config/config')) {
+    if (fs_1.default.existsSync('./config/config.js')) {
         console.log('Already been set up!');
         process.exit(0);
     }
@@ -25,7 +25,7 @@ const settings = new enmap_1.default({
     console.log('Enter your discord API token: ');
     const TOKEN = readline_sync_1.default.question('');
     baseConfig = baseConfig.replace('TOKEN', `${TOKEN}`);
-    fs_1.default.writeFileSync('./config/config', baseConfig);
+    fs_1.default.writeFileSync('./config/config.js', baseConfig);
     console.log('REMEMBER TO NEVER SHARE YOUR TOKEN WITH ANYONE!');
     console.log('Configuration has been written, enjoy!');
     await settings.close();

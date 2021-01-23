@@ -6,11 +6,10 @@ export interface RunFunction {
         client: Bot,
         message: Message,
         args: string[],
-        level?: number
+        level: number
     ): Promise<unknown>;
 }
 export interface confObject {
-    enabled: boolean;
     aliases: string[];
     permLevel: string;
 }

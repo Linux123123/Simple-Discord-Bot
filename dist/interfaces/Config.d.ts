@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message } from '../classes/Message';
 export interface permCheck {
     (message: Message): boolean | undefined;
 }

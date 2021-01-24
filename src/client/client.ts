@@ -46,7 +46,7 @@ class Bot extends Client {
             this.levelCache[thisLevel.name] = thisLevel.level;
         }
     }
-    public embed(data: MessageEmbedOptions) {
+    public embed(data: MessageEmbedOptions): MessageEmbed {
         return new MessageEmbed({
             ...data,
         });

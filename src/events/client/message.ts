@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
 
 export const name: string = 'message';

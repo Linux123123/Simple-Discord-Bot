@@ -4,7 +4,10 @@ import { GuildSettings } from '../../interfaces/GuildSettings';
 export const name: string = 'guildMemberAdd';
 export const run: RunFunction = async (client, member: GuildMember) => {
     // Load the guild's settings
-    const settings: GuildSettings = client.functions.getSettings(member.guild);
+    const settings: GuildSettings = client.functions.getSettings(
+        client,
+        member.guild
+    );
     // If welcome is off, don't proceed (don't welcome the user)
     if (settings.welcomeEnabled !== 'true') return;
     // Replace the placeholders in the welcome message with actual data

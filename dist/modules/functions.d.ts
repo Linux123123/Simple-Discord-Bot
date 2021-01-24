@@ -1,4 +1,5 @@
-import { Guild, Message } from 'discord.js';
+import { Guild } from 'discord.js';
+import { Message } from '../classes/Message';
 import { Bot } from '../client/client';
 import { GuildSettings } from '../interfaces/GuildSettings';
 export declare const defaultSettings: GuildSettings;

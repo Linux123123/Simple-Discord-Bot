@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = exports.name = void 0;
 exports.name = 'guildMemberAdd';
 const run = async (client, member) => {
-    const settings = client.functions.getSettings(member.guild);
+    const settings = client.functions.getSettings(client, member.guild);
     if (settings.welcomeEnabled !== 'true')
         return;
     const welcomeMessage = settings.welcomeMessage.replace('{{user}}', member.id);

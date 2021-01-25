@@ -25,25 +25,11 @@ const config = {
         'flanger',
         'mcompand',
         'pulsator',
-        'subboost',
         'bassboost',
         'vaporwave',
         'nightcore',
         'normalizer',
         'surrounding',
-    ],
-
-    // Intents the bot needs.
-    intents: [
-        'GUILDS',
-        'GUILD_MESSAGES',
-        'GUILD_EMOJIS',
-        'GUILD_INTEGRATIONS',
-        'GUILD_WEBHOOKS',
-        'GUILD_VOICE_STATES',
-        'GUILD_MESSAGE_REACTIONS',
-        'GUILD_PRESENCES',
-        'GUILD_MEMBERS',
     ],
 
     // PERMISSION LEVEL DEFINITIONS.

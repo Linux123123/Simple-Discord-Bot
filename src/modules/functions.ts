@@ -1,9 +1,10 @@
-import { Guild } from 'discord.js';
+import { Queue } from 'discord-player';
+import { Guild, MessageEmbed, TextChannel } from 'discord.js';
 import { Message } from '../classes/Message';
 import { Bot } from '../client/client';
 import { Command } from '../interfaces/Command';
 import { GuildSettings } from '../interfaces/GuildSettings';
-// const Musixmatch = require('@raflymln/musixmatch-lyrics');
+import { Lyrics } from '../interfaces/Lyrics';
 
 // THIS IS HERE BECAUSE SOME PEOPLE DELETE ALL THE GUILD SETTINGS
 // And then they're stuck because the default settings are also gone.
@@ -91,114 +92,148 @@ export const Functions = {
         return text;
     },
 
-    loadCommand: async (client: Bot, commandName: string): Promise<void> => {
+    loadCommand: async (
+        client: Bot,
+        commandName: string
+    ): Promise<boolean | string> => {
         try {
             client.logger(
-                `Loading Command: ${commandName.split('/')[8].split('.')[0]}`
+                `Loading Command: ${commandName.split('/')[7].split('.')[0]}`
             );
             const props: Command = await import(commandName);
             client.commands.set(props.name, props);
             props.conf.aliases.forEach((alias) => {
                 client.aliases.set(alias, props.name);
             });
+            return false;
         } catch (e) {
             client.logger(
                 `Unable to load command ${commandName}: ${e}`,
                 'error'
             );
+            return e;
         }
     },
 
-    unloadCommand: async (client: Bot, commandName: string) => {
-        let command;
-        if (client.commands.has(commandName)) {
-            command = client.commands.get(commandName);
-        } else if (client.aliases.has(commandName)) {
-            command = client.commands.get(client.aliases.get(commandName)!);
+    unloadCommand: async (
+        client: Bot,
+        commandName: string
+    ): Promise<boolean | string> => {
+        try {
+            client.logger(`Unloading Command: ${commandName}`);
+            let command;
+            if (client.commands.has(commandName)) {
+                command = client.commands.get(commandName);
+            } else if (client.aliases.has(commandName)) {
+                command = client.commands.get(client.aliases.get(commandName)!);
+            }
+            if (!command)
+                return `The command \`${commandName}\` doesn"t seem to exist, nor is it an alias. Try again!`;
+            const mod =
+                require.cache[require.resolve(`../commands/${command.name}`)];
+            delete require.cache[
+                require.resolve(`../commands/${command.name}.js`)
+            ];
+            for (let i = 0; i < mod!.parent!.children.length; i++) {
+                if (mod!.parent!.children[i] === mod) {
+                    mod.parent!.children.splice(i, 1);
+                    break;
+                }
+            }
+            return false;
+        } catch (e) {
+            client.logger(
+                `Unable to unload command ${commandName}: ${e}`,
+                'error'
+            );
+            return e;
         }
-        if (!command)
-            return `The command \`${commandName}\` doesn"t seem to exist, nor is it an alias. Try again!`;
-        const mod =
-            require.cache[require.resolve(`../commands/${command.name}`)];
-        delete require.cache[require.resolve(`../commands/${command.name}.js`)];
-        for (let i = 0; i < mod!.parent!.children.length; i++) {
-            if (mod!.parent!.children[i] === mod) {
-                mod.parent!.children.splice(i, 1);
-                break;
+    },
+
+    /* Music player funtcions */
+
+    musicUserCheck: (
+        client: Bot,
+        message: Message,
+        queueNeeded: boolean
+    ): boolean => {
+        if (!message.member!.voice.channel) {
+            (message.channel as TextChannel).bulkDelete(1).then(() => {
+                message.channel
+                    .send(`You're not in a voice channel !`)
+                    .then((msg) => msg.delete({ timeout: 3000 }));
+            });
+            return true;
+        }
+        if (
+            message.guild!.me!.voice.channel &&
+            message.member!.voice.channel.id !==
+                message.guild!.me!.voice.channel.id
+        ) {
+            (message.channel as TextChannel).bulkDelete(1).then(() => {
+                message.channel
+                    .send(`You are not in the same voice channel!`)
+                    .then((msg) => msg.delete({ timeout: 3000 }));
+            });
+            return true;
+        }
+        if (queueNeeded) {
+            if (!client.player.getQueue(message)) {
+                (message.channel as TextChannel).bulkDelete(1).then(() => {
+                    message.channel
+                        .send(`No music currently playing !`)
+                        .then((msg) => msg.delete({ timeout: 3000 }));
+                });
+                return true;
             }
         }
         return false;
     },
 
-    /* Music player funtcions */
+    clearBanner: async (client: Bot, message: Message) => {
+        let channel = await client.channels.fetch(
+            message.settings.musicChannelId
+        );
+        let msg = await (channel as TextChannel).messages.fetch(
+            message.settings.musicMsgId
+        );
 
-    // client.musicUserCheck = (client, message, queueNeeded) => {
-    //     if (!message.member.voice.channel) {
-    //         message.channel.bulkDelete(1).then(() => {
-    //             message.channel
-    //                 .send(`You're not in a voice channel !`)
-    //                 .then((msg) => msg.delete({ timeout: 3000 }));
-    //         });
-    //         return true;
-    //     }
-    //     if (
-    //         message.guild.me.voice.channel &&
-    //         message.member.voice.channel.id !==
-    //             message.guild.me.voice.channel.id
-    //     ) {
-    //         message.channel.bulkDelete(1).then(() => {
-    //             message.channel
-    //                 .send(`You are not in the same voice channel!`)
-    //                 .then((msg) => msg.delete({ timeout: 3000 }));
-    //         });
-    //         return true;
-    //     }
-    //     if (queueNeeded) {
-    //         if (!client.player.getQueue(message)) {
-    //             message.channel.bulkDelete(1).then(() => {
-    //                 message.channel
-    //                     .send(`No music currently playing !`)
-    //                     .then((msg) => msg.delete({ timeout: 3000 }));
-    //             });
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // };
+        const embed = new MessageEmbed()
+            .setTitle('No song playing currently')
+            .setImage(
+                'https://bestbots.today/wp-content/uploads/2020/04/Music.png'
+            )
+            .setFooter(`Prefix for this server is: ${message.settings.prefix}`)
+            .setColor(message.settings.embedColor);
+        msg.edit('Queue:\n', embed);
+    },
 
-    // client.clearBanner = async (client, message) => {
-    //     let channel = await client.channels.fetch(
-    //         message.settings.musicChannelId
-    //     );
-    //     let msg = await channel.messages.fetch(message.settings.musicMsgId);
+    queueMessage: (queue: Queue): string => {
+        let text = 'Queue:\n';
+        for (let i = queue.tracks.length - 1; i >= 1; i--) {
+            text += `${i}. ${queue.tracks[i].title}\n`;
+        }
+        return text;
+    },
 
-    //     const embed = new MessageEmbed()
-    //         .setTitle('No song playing currently')
-    //         .setImage(
-    //             'https://bestbots.today/wp-content/uploads/2020/04/Music.png'
-    //         )
-    //         .setFooter(`Prefix for this server is: ${message.settings.prefix}`)
-    //         .setColor(message.settings.embedColor);
-    //     msg.edit('Queue:\n', embed);
-    // };
-
-    // client.queueMessage = (queue) => {
-    //     let text = 'Queue:\n';
-    //     for (let i = queue.tracks.length - 1; i >= 1; i--) {
-    //         text += `${i}. ${queue.tracks[i].title}\n`;
-    //     }
-    //     return text;
-    // };
-
-    // client.lyrics = async (songname) => {
-    //     try {
-    //         let lyrics = await Musixmatch.find(songname);
-    //         return await lyrics.lyrics;
-    //     } catch (e) {
-    //         return e;
-    //     }
-    // };
-
-    // `await client.wait(1000);` to "pause" for 1 second.
-    wait: require('util').promisify(setTimeout),
+    lyrics: async (
+        client: Bot,
+        songname: string,
+        embedColor: string
+    ): Promise<string | any> => {
+        let embed = client.embed({ color: embedColor, timestamp: new Date() });
+        try {
+            let lyrics: Lyrics = await require('@raflymln/musixmatch-lyrics').find(
+                songname
+            );
+            return embed
+                .setTitle(lyrics.title)
+                .setURL(lyrics.url)
+                .setDescription(lyrics.lyrics)
+                .setAuthor(lyrics.artists)
+                .setFooter('', lyrics.albumImg);
+        } catch (e) {
+            return embed.setDescription(e);
+        }
+    },
 };

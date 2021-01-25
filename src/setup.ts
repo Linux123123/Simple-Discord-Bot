@@ -3,7 +3,7 @@ import fs from 'fs';
 import reader from 'readline-sync';
 import { defaultSettings } from './modules/functions';
 
-let baseConfig = fs.readFileSync('../config.js.example', 'utf8');
+let baseConfig = fs.readFileSync(`${__dirname}/../config.js.example`, 'utf8');
 
 const settings = new Enmap({
     name: 'settings',
@@ -12,7 +12,7 @@ const settings = new Enmap({
 });
 
 (async function () {
-    if (fs.existsSync('./config/config.js')) {
+    if (fs.existsSync(`${__dirname}/config/config.js`)) {
         console.log('Already been set up!');
         process.exit(0);
     }
@@ -29,7 +29,7 @@ const settings = new Enmap({
 
     baseConfig = baseConfig.replace('TOKEN', `${TOKEN}`);
 
-    fs.writeFileSync('./config/config.js', baseConfig);
+    fs.writeFileSync(`${__dirname}/config/config.js`, baseConfig);
     console.log('REMEMBER TO NEVER SHARE YOUR TOKEN WITH ANYONE!');
     console.log('Configuration has been written, enjoy!');
     await settings.close();

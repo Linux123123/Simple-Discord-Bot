@@ -1,3 +1,4 @@
+import { TextChannel } from 'discord.js';
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
 
@@ -16,21 +17,23 @@ export const run: RunFunction = async (client, message: Message) => {
         return message.reply(`My prefix is \`${settings.prefix}\``);
     }
 
-    // if (message.channel.id === settings.musicChannelId) {
-    //     if (message.content.indexOf(settings.prefix) !== 0) {
-    //         (message.channel as TextChannel).bulkDelete(1);
-    //         const args = message.content.trim();
-    //         client.player.play(message, args, true);
-    //         const level = client.permlevel(message);
-    //         client.logger.cmd(
-    //             `${
-    //                 client.config.permLevels.find((l) => l.level === level).name
-    //             } ${message.author.username} (${
-    //                 message.author.id
-    //             }) ran command play`
-    //         );
-    //     }
-    // }
+    if (message.channel.id === settings.musicChannelId) {
+        if (message.content.indexOf(settings.prefix) !== 0) {
+            (message.channel as TextChannel).bulkDelete(1);
+            const args = message.content.trim();
+            client.player.play(message, args, true);
+            const level = client.functions.permlevel(client, message);
+            client.logger(
+                `${
+                    client.config.permLevels.find((l) => l.level === level)!
+                        .name
+                } ${message.author.username} (${
+                    message.author.id
+                }) ran command play`,
+                'cmd'
+            );
+        }
+    }
 
     if (message.content.indexOf(settings.prefix) !== 0) return; // Ignore without prefix
 

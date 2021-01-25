@@ -79,7 +79,7 @@ exports.Functions = {
     },
     loadCommand: async (client, commandName) => {
         try {
-            client.logger(`Loading Command: ${commandName.split('/')[7].split('.')[0]}`);
+            client.logger(`Loading Command: ${commandName.split('/').pop().split('.')[0]}`);
             const props = await Promise.resolve().then(() => __importStar(require(commandName)));
             client.commands.set(props.name, props);
             props.conf.aliases.forEach((alias) => {

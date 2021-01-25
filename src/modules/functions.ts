@@ -98,7 +98,9 @@ export const Functions = {
     ): Promise<boolean | string> => {
         try {
             client.logger(
-                `Loading Command: ${commandName.split('/')[7].split('.')[0]}`
+                `Loading Command: ${
+                    commandName.split('/').pop()!.split('.')[0]
+                }`
             );
             const props: Command = await import(commandName);
             client.commands.set(props.name, props);

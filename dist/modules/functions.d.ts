@@ -1,6 +1,6 @@
-import { Queue } from 'discord-player';
 import { Guild } from 'discord.js';
 import { Message } from '../classes/Message';
+import { Queue } from '../classes/Queue';
 import { Bot } from '../client/client';
 import { GuildSettings } from '../interfaces/GuildSettings';
 export declare const defaultSettings: GuildSettings;

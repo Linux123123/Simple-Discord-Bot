@@ -1,6 +1,6 @@
-import { Queue } from 'discord-player';
 import { Guild, MessageEmbed, TextChannel } from 'discord.js';
 import { Message } from '../classes/Message';
+import { Queue } from '../classes/Queue';
 import { Bot } from '../client/client';
 import { Command } from '../interfaces/Command';
 import { GuildSettings } from '../interfaces/GuildSettings';

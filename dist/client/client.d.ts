@@ -25,7 +25,7 @@ declare class Bot extends Client {
         unloadCommand: (client: Bot, commandName: string) => Promise<string | boolean>;
         musicUserCheck: (client: Bot, message: import("../classes/Message").Message, queueNeeded: boolean) => boolean;
         clearBanner: (client: Bot, message: import("../classes/Message").Message) => Promise<void>;
-        queueMessage: (queue: import("discord-player").Queue) => string;
+        queueMessage: (queue: import("../classes/Queue").Queue) => string;
         lyrics: (client: Bot, songname: string, embedColor: string) => Promise<any>;
     };
     start(config: Config): Promise<void>;

@@ -1,4 +1,5 @@
 import { TextChannel } from 'discord.js';
+import { Queue } from '../classes/Queue';
 import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message) => {
@@ -8,7 +9,7 @@ export const run: RunFunction = async (client, message) => {
     let msg = await (channel as TextChannel).messages.fetch(
         message.settings.musicMsgId
     );
-    msg.edit(client.functions.queueMessage(queue));
+    msg.edit(client.functions.queueMessage(queue as Queue));
 
     client.player.skip(message);
     (message.channel as TextChannel).bulkDelete(1).then(() => {

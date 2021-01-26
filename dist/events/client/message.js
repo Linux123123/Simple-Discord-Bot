@@ -7,9 +7,8 @@ const run = async (client, message) => {
         return;
     const settings = (message.settings = client.functions.getSettings(client, message.guild));
     const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
-    if (message.content.match(prefixMention)) {
+    if (message.content.match(prefixMention))
         return message.reply(`My prefix is \`${settings.prefix}\``);
-    }
     if (message.channel.id === settings.musicChannelId) {
         if (message.content.indexOf(settings.prefix) !== 0) {
             message.channel.bulkDelete(1);

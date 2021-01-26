@@ -2,7 +2,7 @@ import { Client, MessageEmbed, MessageEmbedOptions, Intents } from 'discord.js';
 import glob from 'glob';
 import { promisify } from 'util';
 import enmap from 'enmap';
-import { Player, PlayerEvents } from 'discord-player';
+import { Player } from 'discord-player';
 import { Command } from '../interfaces/Command';
 import { Event } from '../interfaces/Event';
 import { Config, permObject } from '../interfaces/Config';

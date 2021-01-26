@@ -4,6 +4,6 @@ import { RunFunction } from '../../interfaces/Event';
 export const name: string = 'queueEnd';
 
 export const run: RunFunction = (client, message: Message) => {
-    (client.player.getQueue(message) as Queue).collector.stop('Queue end!');
+    (client.player.getQueue(message) as Queue).collector.stop();
     client.functions.clearBanner(client, message);
 };

@@ -228,12 +228,16 @@ export const Functions = {
             let lyrics: Lyrics = await require('@raflymln/musixmatch-lyrics').find(
                 songname
             );
+            if (lyrics.lyrics.length >= 2048) {
+                embed.addField('⠀', lyrics.lyrics.slice(2030));
+                lyrics.lyrics = lyrics.lyrics.slice(0, 2030);
+            }
             return embed
                 .setTitle(lyrics.title)
                 .setURL(lyrics.url)
                 .setDescription(lyrics.lyrics)
                 .setAuthor(lyrics.artists)
-                .setFooter('', lyrics.albumImg);
+                .setFooter(lyrics.artists, lyrics.albumImg);
         } catch (e) {
             return embed.setDescription(e);
         }

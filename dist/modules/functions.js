@@ -180,7 +180,7 @@ exports.Functions = {
                 .setURL(lyrics.url)
                 .setDescription(lyrics.lyrics)
                 .setAuthor(lyrics.artists)
-                .setFooter(lyrics.artists, lyrics.albumImg);
+                .setImage(lyrics.albumImg);
         }
         catch (e) {
             return embed.setDescription(e);

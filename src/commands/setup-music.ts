@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { MessageEmbed } from 'discord.js';
 import { RunFunction } from '../interfaces/Command';
 
@@ -21,18 +22,21 @@ export const run: RunFunction = async (client, message, args) => {
             client.settings.set(
                 message.guild!.id,
                 channel.id,
-                'musicChannelId'
+                'musicChannelId',
             );
             channel
                 .send('Queue:\n', embed)
                 .then((msg) =>
-                    client.settings.set(message.guild!.id, msg.id, 'musicMsgId')
+                    client.settings.set(
+                        message.guild!.id,
+                        msg.id,
+                        'musicMsgId',
+                    ),
                 );
         });
 };
-export const name: string = 'setup-music';
-
 export const conf = {
+    name: 'setup-music',
     aliases: [],
     permLevel: 'Administrator',
 };

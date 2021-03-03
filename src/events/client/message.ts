@@ -1,18 +1,19 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { TextChannel } from 'discord.js';
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
 
-export const name: string = 'message';
+export const name = 'message';
 export const run: RunFunction = async (client, message: Message) => {
     if (message.author.bot || !message.guild) return; // Don't listen to yourself
 
     const settings = (message.settings = client.functions.getSettings(
         client,
-        message.guild!
+        message.guild!,
     )); // Grab the settings for this server
 
     // Checks if the bot was mentioned, with no message after it, returns the prefix.
-    const prefixMention = new RegExp(`^<@!?${client.user!.id}>( |)$`);
+    const prefixMention = new RegExp(`^<@!?${client.user?.id}>( |)$`);
     if (message.content.match(prefixMention))
         return message.reply(`My prefix is \`${settings.prefix}\``);
 
@@ -24,12 +25,12 @@ export const run: RunFunction = async (client, message: Message) => {
             const level = client.functions.permlevel(client, message);
             client.logger(
                 `${
-                    client.config.permLevels.find((l) => l.level === level)!
-                        .name
+                    client.config.permLevels.find((l) => l.level === level)
+                        ?.name
                 } ${message.author.username} (${
                     message.author.id
                 }) ran command play`,
-                'cmd'
+                'cmd',
             );
         }
     }
@@ -61,7 +62,7 @@ export const run: RunFunction = async (client, message: Message) => {
         return message.channel
             .send(`You do not have permission to use this command.
   Your permission level is ${level} (${
-            client.config.permLevels.find((l) => l.level === level)!.name
+            client.config.permLevels.find((l) => l.level === level)?.name
         })
   This command requires level ${client.levelCache[cmd.conf.permLevel]} (${
             cmd.conf.permLevel
@@ -70,10 +71,10 @@ export const run: RunFunction = async (client, message: Message) => {
 
     // If the command exists, **AND** the user has permission, run it.
     client.logger(
-        `${client.config.permLevels.find((l) => l.level === level)!.name} ${
+        `${client.config.permLevels.find((l) => l.level === level)?.name} ${
             message.author.username
-        } (${message.author.id}) ran command ${cmd.name}`,
-        'cmd'
+        } (${message.author.id}) ran command ${cmd.conf.name}`,
+        'cmd',
     );
     cmd.run(client, message, args, level);
 };

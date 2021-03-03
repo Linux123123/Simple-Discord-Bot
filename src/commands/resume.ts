@@ -9,13 +9,12 @@ export const run: RunFunction = async (client, message) => {
     client.player.resume(message);
     message.channel
         .send(
-            `Song ${client.player.getQueue(message).playing.title} resumed ! !`
+            `Song ${client.player.getQueue(message).playing.title} resumed ! !`,
         )
         .then((msg) => msg.delete({ timeout: 3000 }));
 };
-export const name: string = 'resume';
-
 export const conf = {
+    name: 'resume',
     aliases: ['r', 'res'],
     permLevel: 'Moderator',
 };

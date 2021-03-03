@@ -62,7 +62,8 @@ class Bot extends discord_js_1.Client {
         playerEventFiles.map(async (eventFile) => {
             const ev = (await Promise.resolve().then(() => __importStar(require(eventFile))));
             this.logger(`Loading Player Event: ${ev.name}`);
-            let name = ev.name;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const name = ev.name;
             this.playerEvents.set(ev.name, ev);
             this.player.on(name, ev.run.bind(null, this));
         });
@@ -72,9 +73,7 @@ class Bot extends discord_js_1.Client {
         }
     }
     embed(data) {
-        return new discord_js_1.MessageEmbed({
-            ...data,
-        });
+        return new discord_js_1.MessageEmbed(Object.assign({}, data));
     }
 }
 exports.Bot = Bot;

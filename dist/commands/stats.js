@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const discord_js_1 = require("discord.js");
 const moment_1 = __importDefault(require("moment"));
 Promise.resolve().then(() => __importStar(require('moment-duration-format')));
@@ -76,8 +76,8 @@ const run = async (client, message) => {
     }));
 };
 exports.run = run;
-exports.name = 'stats';
 exports.conf = {
+    name: 'stats',
     aliases: [],
     permLevel: 'User',
 };

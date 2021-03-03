@@ -1,6 +1,6 @@
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
-export const name: string = 'noResults';
+export const name = 'noResults';
 
 export const run: RunFunction = (client, message: Message, query: string) => {
     message.channel

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const run = async (client, message, args) => {
     if (client.functions.musicUserCheck(client, message, false)) {
         return;
@@ -17,8 +17,8 @@ const run = async (client, message, args) => {
     client.player.play(message, args.join(' '), true);
 };
 exports.run = run;
-exports.name = 'play';
 exports.conf = {
+    name: 'play',
     aliases: ['p'],
     permLevel: 'User',
 };

@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const run = async (client, message) => {
     if (client.functions.musicUserCheck(client, message, true))
         return;
-    let queue = client.player.getQueue(message);
-    let channel = await client.channels.fetch(message.settings.musicChannelId);
-    let msg = await channel.messages.fetch(message.settings.musicMsgId);
+    const queue = client.player.getQueue(message);
+    const channel = await client.channels.fetch(message.settings.musicChannelId);
+    const msg = await channel.messages.fetch(message.settings.musicMsgId);
     msg.edit(client.functions.queueMessage(queue));
     client.player.skip(message);
     message.channel.bulkDelete(1).then(() => {
@@ -16,8 +16,8 @@ const run = async (client, message) => {
     });
 };
 exports.run = run;
-exports.name = 'skip';
 exports.conf = {
+    name: 'skip',
     aliases: ['sk'],
     permLevel: 'Moderator',
 };

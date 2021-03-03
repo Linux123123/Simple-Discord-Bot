@@ -2,12 +2,14 @@ import { ReactionEmoji, TextChannel, User } from 'discord.js';
 import { Message } from '../../classes/Message';
 import { Queue } from '../../classes/Queue';
 import { RunFunction } from '../../interfaces/Event';
-export const name: string = 'queueCreate';
+export const name = 'queueCreate';
 
 export const run: RunFunction = async (client, message: Message) => {
-    let channel = await client.channels.fetch(message.settings.musicChannelId);
-    let msg = await (channel as TextChannel).messages.fetch(
-        message.settings.musicMsgId
+    const channel = await client.channels.fetch(
+        message.settings.musicChannelId,
+    );
+    const msg = await (channel as TextChannel).messages.fetch(
+        message.settings.musicMsgId,
     );
     try {
         await msg.react('⏹');
@@ -17,8 +19,8 @@ export const run: RunFunction = async (client, message: Message) => {
         client.logger(error, 'error');
     }
     const filter = (reaction: ReactionEmoji, user: User) =>
-        user.id !== message.client.user!.id;
-    var musicReactCollector = msg.createReactionCollector(filter);
+        user.id !== message.client.user?.id;
+    const musicReactCollector = msg.createReactionCollector(filter);
     (client.player.getQueue(message) as Queue).collector = musicReactCollector;
     musicReactCollector.on('collect', (reaction, user) => {
         switch (reaction.emoji.name) {
@@ -66,6 +68,4 @@ export const run: RunFunction = async (client, message: Message) => {
                 break;
         }
     });
-
-    musicReactCollector.on('end', () => {});
 };

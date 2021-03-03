@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const discord_js_1 = require("discord.js");
 const run = async (client, message, args) => {
     if (args.length < 1) {
@@ -26,8 +27,8 @@ const run = async (client, message, args) => {
     });
 };
 exports.run = run;
-exports.name = 'setup-music';
 exports.conf = {
+    name: 'setup-music',
     aliases: [],
     permLevel: 'Administrator',
 };

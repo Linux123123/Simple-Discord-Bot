@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const node_fetch_1 = __importDefault(require("node-fetch"));
-const entities = require('entities');
+const entities_1 = __importDefault(require("entities"));
 const valid_url_1 = __importDefault(require("valid-url"));
 const discord_js_1 = require("discord.js");
 const run = async (client, message, args) => {
@@ -32,11 +33,11 @@ const run = async (client, message, args) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json',
+            'Accept': 'application/json',
         },
     };
     client.logger(`Retrieving reddit posts on ${message.guild.name} from r/${url.split('/')[4]}`);
-    let intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
         if (client.settings.get(message.guild.id, 'reddit') == 'false') {
             clearInterval(intervalId);
             client.logger('Stopping reddit retrievals!');
@@ -53,7 +54,7 @@ const run = async (client, message, args) => {
                     return rawData;
             })
                 .then((rawData) => {
-                let res = rawData.json();
+                const res = rawData.json();
                 return res;
             })
                 .then((res) => {
@@ -69,10 +70,10 @@ const run = async (client, message, args) => {
                 const embed = new discord_js_1.MessageEmbed()
                     .setTitle(`${post.link_flair_text
                     ? `[${post.link_flair_text}] `
-                    : ''}${entities.decodeHTML(post.title)}`)
+                    : ''}${entities_1.default.decodeHTML(post.title)}`)
                     .setURL(`https://redd.it/${post.id}`)
                     .setDescription(`${post.is_self
-                    ? entities.decodeHTML(post.selftext.length > 253
+                    ? entities_1.default.decodeHTML(post.selftext.length > 253
                         ? post.selftext
                             .slice(0, 253)
                             .concat('...')
@@ -94,11 +95,11 @@ const run = async (client, message, args) => {
                 }
             });
         }
-    }, 2 * 1000);
+    }, 2 * 1000); // 2 Seconds
 };
 exports.run = run;
-exports.name = 'reddit';
 exports.conf = {
+    name: 'reddit',
     aliases: ['memes'],
     permLevel: 'Moderator',
 };

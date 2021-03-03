@@ -4,6 +4,7 @@ import { RunFunction } from '../interfaces/Command';
 export const run: RunFunction = async (client, message, args) => {
     if (client.functions.musicUserCheck(client, message, true)) return;
     (message.channel as TextChannel).bulkDelete(1);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!args[0] || isNaN(args[0] as any))
         return message.channel
             .send(`Please enter a valid number !`)
@@ -22,9 +23,8 @@ export const run: RunFunction = async (client, message, args) => {
         .send(`Volume set to **${parseInt(args[0])}%** !`)
         .then((msg) => msg.delete({ timeout: 3000 }));
 };
-export const name: string = 'volume';
-
 export const conf = {
+    name: 'volume',
     aliases: ['vol'],
     permLevel: 'Moderator',
 };

@@ -21,7 +21,7 @@ class Bot extends Client {
     public playerEvents: enmap<string, Event> = new enmap();
     public aliases: enmap<string, string> = new enmap();
     public settings: enmap<string, GuildSettings> = new enmap('settings');
-    public levelCache: any = {};
+    public levelCache: { [key: string]: number } = {};
     public logger = Logger;
     public player = new Player(this);
     public config!: Config;
@@ -30,13 +30,13 @@ class Bot extends Client {
         this.config = config;
         this.login(config.token);
         const commandFiles: string[] = await globPromise(
-            `${__dirname}/../commands/*.js`
+            `${__dirname}/../commands/*.js`,
         );
         const eventFiles = await globPromise(
-            `${__dirname}/../events/client/*.js`
+            `${__dirname}/../events/client/*.js`,
         );
         const playerEventFiles = await globPromise(
-            `${__dirname}/../events/player/*.js`
+            `${__dirname}/../events/player/*.js`,
         );
         commandFiles.map(async (value: string) => {
             this.functions.loadCommand(this, value);
@@ -50,7 +50,8 @@ class Bot extends Client {
         playerEventFiles.map(async (eventFile: string) => {
             const ev = (await import(eventFile)) as Event;
             this.logger(`Loading Player Event: ${ev.name}`);
-            let name: any = ev.name;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const name: any = ev.name;
             this.playerEvents.set(ev.name, ev);
             this.player.on(name, ev.run.bind(null, this));
         });

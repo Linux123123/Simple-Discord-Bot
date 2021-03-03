@@ -14,9 +14,8 @@ export const run: RunFunction = async (client, message) => {
             .then((msg) => msg.delete({ timeout: 3000 }));
     });
 };
-export const name: string = 'stop';
-
 export const conf = {
+    name: 'stop',
     aliases: ['s'],
     permLevel: 'Moderator',
 };

@@ -1,8 +1,13 @@
+import { PlayerError } from 'discord-player';
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
-export const name: string = 'error';
+export const name = 'error';
 
-export const run: RunFunction = (client, error: any, message: Message) => {
+export const run: RunFunction = (
+    client,
+    error: PlayerError,
+    message: Message,
+) => {
     client.functions.clearBanner(client, message);
     switch (error) {
         case 'NotPlaying':

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
-const run = async (client, message, args, level) => {
+exports.help = exports.conf = exports.run = void 0;
+const run = async (client, message) => {
     const embed = client.embed({
         title: '**🏓 PING!**',
         color: message.settings.embedColor,
@@ -20,8 +20,8 @@ const run = async (client, message, args, level) => {
     message.channel.send(embed);
 };
 exports.run = run;
-exports.name = 'ping';
 exports.conf = {
+    name: 'ping',
     aliases: ['latency'],
     permLevel: 'User',
 };

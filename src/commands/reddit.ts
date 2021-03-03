@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import fetch from 'node-fetch';
-const entities = require('entities');
+import entities from 'entities';
 import validUrl from 'valid-url';
 import { MessageEmbed } from 'discord.js';
 import { RunFunction } from '../interfaces/Command';
@@ -30,16 +31,16 @@ export const run: RunFunction = async (client, message, args) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Accept: 'application/json',
+            'Accept': 'application/json',
         },
     };
 
     client.logger(
         `Retrieving reddit posts on ${message.guild!.name} from r/${
             url.split('/')[4]
-        }`
+        }`,
     );
-    let intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
         if (client.settings.get(message.guild!.id, 'reddit') == 'false') {
             clearInterval(intervalId);
             client.logger('Stopping reddit retrievals!');
@@ -48,20 +49,20 @@ export const run: RunFunction = async (client, message, args) => {
                 .then((rawData) => {
                     if (!rawData.ok) {
                         message.reply(
-                            'Error retrieving subreddit! Derp. Is it really a real one?'
+                            'Error retrieving subreddit! Derp. Is it really a real one?',
                         );
                         clearInterval(intervalId);
                         throw 'Retrieving data from reddit failed! Stopping retrievals!';
                     } else return rawData;
                 })
                 .then((rawData) => {
-                    let res = rawData.json();
+                    const res = rawData.json();
                     return res;
                 })
                 .then((res) => {
                     if (res.data.after == null) {
                         message.reply(
-                            'Error retrieving subreddit! Derp. Is it really a real one?'
+                            'Error retrieving subreddit! Derp. Is it really a real one?',
                         );
                         clearInterval(intervalId);
                         throw 'Retrieving data from reddit failed! Stopping retrievals!';
@@ -76,7 +77,7 @@ export const run: RunFunction = async (client, message, args) => {
                                 post.link_flair_text
                                     ? `[${post.link_flair_text}] `
                                     : ''
-                            }${entities.decodeHTML(post.title)}`
+                            }${entities.decodeHTML(post.title)}`,
                         )
                         .setURL(`https://redd.it/${post.id}`)
                         .setDescription(
@@ -87,20 +88,20 @@ export const run: RunFunction = async (client, message, args) => {
                                               ? post.selftext
                                                     .slice(0, 253)
                                                     .concat('...')
-                                              : post.selftext
+                                              : post.selftext,
                                       )
                                     : ''
-                            }`
+                            }`,
                         )
                         .setImage(
                             validUrl.isUri(post.url_overridden_by_dest)
                                 ? post.url_overridden_by_dest
-                                : null
+                                : null,
                         )
                         .setFooter(
                             `${post.is_self ? 'self post' : 'link post'} by ${
                                 post.author
-                            }`
+                            }`,
                         )
                         .setColor(message.settings.embedColor)
                         .setTimestamp(new Date(post.created_utc * 1000));
@@ -112,7 +113,7 @@ export const run: RunFunction = async (client, message, args) => {
                         client.settings.set(
                             message.guild!.id,
                             'false',
-                            'reddit'
+                            'reddit',
                         );
                         client.logger(err, 'error');
                     }
@@ -120,9 +121,8 @@ export const run: RunFunction = async (client, message, args) => {
         }
     }, 2 * 1000); // 2 Seconds
 };
-export const name: string = 'reddit';
-
 export const conf = {
+    name: 'reddit',
     aliases: ['memes'],
     permLevel: 'Moderator',
 };

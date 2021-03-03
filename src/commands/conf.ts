@@ -1,4 +1,5 @@
 import { inspect } from 'util';
+import { Bot } from '../client/client';
 import { RunFunction } from '../interfaces/Command';
 
 /*
@@ -10,11 +11,12 @@ your bot. The `del` action removes the key also from every guild, and loses its 
 */
 
 export const run: RunFunction = async (
-    client,
+    client: Bot,
     message,
-    [action, key, ...value]
+    [action, key, ...value],
 ) => {
     // Retrieve Default Values from the default settings in the bot.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const defaults = client.settings.get('default')!;
 
     // Adding a new key adds it to every guild (it will be visible to all of them)
@@ -22,7 +24,7 @@ export const run: RunFunction = async (
         if (!key) return message.reply('Please specify a key to add');
         if (defaults[key])
             return message.reply(
-                'This key already exists in the default settings'
+                'This key already exists in the default settings',
             );
         if (value.length < 1) return message.reply('Please specify a value');
 
@@ -32,7 +34,7 @@ export const run: RunFunction = async (
         // One the settings is modified, we write it back to the collection
         client.settings.set('default', defaults);
         message.reply(
-            `${key} successfully added with the value of ${value.join(' ')}`
+            `${key} successfully added with the value of ${value.join(' ')}`,
         );
     }
 
@@ -60,7 +62,7 @@ export const run: RunFunction = async (
         // Throw the 'are you sure?' text at them.
         const response = await client.functions.awaitReply(
             message,
-            `Are you sure you want to permanently delete ${key} from all guilds? This **CANNOT** be undone.`
+            `Are you sure you want to permanently delete ${key} from all guilds? This **CANNOT** be undone.`,
         );
 
         // If they respond with y or yes, continue.
@@ -72,7 +74,7 @@ export const run: RunFunction = async (
             // then we loop on all the guilds and remove this key if it exists.
             // "if it exists" is done with the filter (if the key is present and it's not the default config!)
             for (const [guildid, conf] of client.settings.filter(
-                (setting, id) => !!setting[key] && id !== 'default'
+                (setting, id) => !!setting[key] && id !== 'default',
             )) {
                 delete conf[key];
                 client.settings.set(guildid, conf);
@@ -97,14 +99,13 @@ export const run: RunFunction = async (
     } else {
         await message.channel.send(
             `***__Bot Default Settings__***\n\`\`\`json\n${inspect(
-                defaults
-            )}\n\`\`\``
+                defaults,
+            )}\n\`\`\``,
         );
     }
 };
-export const name: string = 'conf';
-
 export const conf = {
+    name: 'conf',
     aliases: ['defaults'],
     permLevel: 'Bot Admin',
 };

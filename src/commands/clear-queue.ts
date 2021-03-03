@@ -14,9 +14,8 @@ export const run: RunFunction = async (client, message) => {
             .then((msg) => msg.delete({ timeout: 3000 }));
     });
 };
-export const name: string = 'clear-queue';
-
 export const conf = {
+    name: 'clear-queue',
     aliases: ['cq', 'clr-que'],
     permLevel: 'Moderator',
 };

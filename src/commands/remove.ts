@@ -11,7 +11,7 @@ export const run: RunFunction = async (client, message, args) => {
             .then((msg) => msg.delete({ timeout: 3000 }));
         return;
     }
-    let queue = client.player.getQueue(message);
+    const queue = client.player.getQueue(message);
     client.channels.fetch(message.settings.musicChannelId).then((channel) => {
         (channel as TextChannel).messages
             .fetch(message.settings.musicMsgId)
@@ -25,9 +25,8 @@ export const run: RunFunction = async (client, message, args) => {
         .send(`Song **removed** !`)
         .then((msg) => msg.delete({ timeout: 3000 }));
 };
-export const name: string = 'remove';
-
 export const conf = {
+    name: 'remove',
     aliases: ['r', 'rem'],
     permLevel: 'Moderator',
 };

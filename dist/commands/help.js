@@ -1,17 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const run = async (client, message, args, level) => {
+    // If no specific command is called, show all filtered commands.
     if (!args[0]) {
+        // Filter all commands by which are available for the user's level, using the <Collection>.filter() method.
         const myCommands = client.commands.filter((cmd) => client.levelCache[cmd.conf.permLevel] <= level);
         let currentCategory = '';
-        let fields = [];
+        const fields = [];
         let fieldsNum = 0;
         const sorted = myCommands
             .array()
             .sort((p, c) => p.help.category > c.help.category
             ? 1
-            : p.name > c.name && p.help.category === c.help.category
+            : p.conf.name > c.conf.name &&
+                p.help.category === c.help.category
                 ? 1
                 : -1);
         sorted.forEach((c) => {
@@ -22,7 +25,7 @@ const run = async (client, message, args, level) => {
                 fields[fieldsNum] = { name: `${cat}`, value: '' };
                 currentCategory = cat;
             }
-            fields[fieldsNum].value += `${message.settings.prefix}${c.name} - ${c.help.description}\n`;
+            fields[fieldsNum].value += `${message.settings.prefix}${c.conf.name} - ${c.help.description}\n`;
         });
         message.channel.send(client.embed({
             title: 'Command list',
@@ -33,9 +36,11 @@ const run = async (client, message, args, level) => {
         }));
     }
     else {
-        let cmd = args[0];
+        // Show individual command's help.
+        const cmd = args[0];
         if (client.commands.has(cmd)) {
-            let command = client.commands.get(cmd);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const command = client.commands.get(cmd);
             if (level < client.levelCache[command.conf.permLevel])
                 return;
             message.channel.send(client.embed({
@@ -58,8 +63,8 @@ const run = async (client, message, args, level) => {
     }
 };
 exports.run = run;
-exports.name = 'help';
 exports.conf = {
+    name: 'help',
     aliases: ['h', 'halp'],
     permLevel: 'User',
 };

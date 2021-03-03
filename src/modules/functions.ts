@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Guild, MessageEmbed, TextChannel } from 'discord.js';
 import { Message } from '../classes/Message';
 import { Queue } from '../classes/Queue';
@@ -27,7 +28,7 @@ export const defaultSettings: GuildSettings = {
 
 export const Functions = {
     /* PERMISSION LEVEL FUNCTION */
-    permlevel: (client: Bot, message: Message) => {
+    permlevel: (client: Bot, message: Message): number => {
         let permlvl = 0;
 
         const permOrder = client.config.permLevels
@@ -59,7 +60,11 @@ export const Functions = {
     const response = await client.awaitReply(msg, "Favourite Color?");
     msg.reply(`Oh, I really love ${response} too!`);
     */
-    awaitReply: async (msg: Message, question: string, limit = 60000) => {
+    awaitReply: async (
+        msg: Message,
+        question: string,
+        limit = 60000,
+    ): Promise<string> => {
         const filter = (m: Message) => m.author.id === msg.author.id;
         await msg.channel.send(question);
         const collected = await msg.channel.awaitMessages(filter, {
@@ -69,49 +74,27 @@ export const Functions = {
         });
         return collected.first()!.content;
     },
-    /*
-    MESSAGE CLEAN FUNCTION
-    "Clean" removes @everyone pings, as well as tokens, and makes code blocks
-    escaped so they're shown more easily. As a bonus it resolves promises
-    and stringifies objects!
-    This is mostly only used by the Eval and Exec commands.
-    */
-    clean: async (client: Bot, text: any) => {
-        if (text && text.constructor.name == 'Promise') text = await text;
-        if (typeof text !== 'string')
-            text = require('util').inspect(text, { depth: 1 });
-
-        text = text
-            .replace(/`/g, '`' + String.fromCharCode(8203))
-            .replace(/@/g, '@' + String.fromCharCode(8203))
-            .replace(
-                client.token,
-                'mfa.VkO_2G4Qv3T--NO--lWetW_tjND--TOKEN--QFTm6YGtzq9PH--4U--tG0'
-            );
-
-        return text;
-    },
 
     loadCommand: async (
         client: Bot,
-        commandName: string
+        commandName: string,
     ): Promise<boolean | string> => {
         try {
             client.logger(
                 `Loading Command: ${
-                    commandName.split('/').pop()!.split('.')[0]
-                }`
+                    commandName.split('/').pop()?.split('.')[0]
+                }`,
             );
             const props: Command = await import(commandName);
-            client.commands.set(props.name, props);
+            client.commands.set(props.conf.name, props);
             props.conf.aliases.forEach((alias) => {
-                client.aliases.set(alias, props.name);
+                client.aliases.set(alias, props.conf.name);
             });
             return false;
         } catch (e) {
             client.logger(
                 `Unable to load command ${commandName}: ${e}`,
-                'error'
+                'error',
             );
             return e;
         }
@@ -119,7 +102,7 @@ export const Functions = {
 
     unloadCommand: async (
         client: Bot,
-        commandName: string
+        commandName: string,
     ): Promise<boolean | string> => {
         try {
             client.logger(`Unloading Command: ${commandName}`);
@@ -132,9 +115,11 @@ export const Functions = {
             if (!command)
                 return `The command \`${commandName}\` doesn"t seem to exist, nor is it an alias. Try again!`;
             const mod =
-                require.cache[require.resolve(`../commands/${command.name}`)];
+                require.cache[
+                    require.resolve(`../commands/${command.conf.name}`)
+                ];
             delete require.cache[
-                require.resolve(`../commands/${command.name}.js`)
+                require.resolve(`../commands/${command.conf.name}.js`)
             ];
             for (let i = 0; i < mod!.parent!.children.length; i++) {
                 if (mod!.parent!.children[i] === mod) {
@@ -146,7 +131,7 @@ export const Functions = {
         } catch (e) {
             client.logger(
                 `Unable to unload command ${commandName}: ${e}`,
-                'error'
+                'error',
             );
             return e;
         }
@@ -157,7 +142,7 @@ export const Functions = {
     musicUserCheck: (
         client: Bot,
         message: Message,
-        queueNeeded: boolean
+        queueNeeded: boolean,
     ): boolean => {
         if (!message.member!.voice.channel) {
             (message.channel as TextChannel).bulkDelete(1).then(() => {
@@ -192,18 +177,18 @@ export const Functions = {
         return false;
     },
 
-    clearBanner: async (client: Bot, message: Message) => {
-        let channel = await client.channels.fetch(
-            message.settings.musicChannelId
+    clearBanner: async (client: Bot, message: Message): Promise<void> => {
+        const channel = await client.channels.fetch(
+            message.settings.musicChannelId,
         );
-        let msg = await (channel as TextChannel).messages.fetch(
-            message.settings.musicMsgId
+        const msg = await (channel as TextChannel).messages.fetch(
+            message.settings.musicMsgId,
         );
 
         const embed = new MessageEmbed()
             .setTitle('No song playing currently')
             .setImage(
-                'https://bestbots.today/wp-content/uploads/2020/04/Music.png'
+                'https://bestbots.today/wp-content/uploads/2020/04/Music.png',
             )
             .setFooter(`Prefix for this server is: ${message.settings.prefix}`)
             .setColor(message.settings.embedColor);
@@ -221,13 +206,16 @@ export const Functions = {
     lyrics: async (
         client: Bot,
         songname: string,
-        embedColor: string
-    ): Promise<string | any> => {
-        let embed = client.embed({ color: embedColor, timestamp: new Date() });
+        embedColor: string,
+    ): Promise<MessageEmbed> => {
+        const embed = client.embed({
+            color: embedColor,
+            timestamp: new Date(),
+        });
         try {
-            let lyrics: Lyrics = await require('@raflymln/musixmatch-lyrics').find(
-                songname
-            );
+            const lyrics: Lyrics = await (
+                await import('@raflymln/musixmatch-lyrics')
+            ).find(songname);
             if (lyrics.lyrics.length >= 2048) {
                 embed.addField('⠀', lyrics.lyrics.slice(2030));
                 lyrics.lyrics = lyrics.lyrics.slice(0, 2030);

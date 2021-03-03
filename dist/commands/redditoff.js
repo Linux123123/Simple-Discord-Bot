@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const run = async (client, message) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     client.settings.set(message.guild.id, 'false', 'reddit');
     message.channel.bulkDelete(1).then(() => {
         message.channel
@@ -14,8 +15,8 @@ const run = async (client, message) => {
     });
 };
 exports.run = run;
-exports.name = 'redditoff';
 exports.conf = {
+    name: 'redditoff',
     aliases: ['offreddit'],
     permLevel: 'Moderator',
 };

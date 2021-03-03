@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const run = async (client, message) => {
     if (client.functions.musicUserCheck(client, message, true)) {
         return;
@@ -15,8 +15,8 @@ const run = async (client, message) => {
     });
 };
 exports.run = run;
-exports.name = 'clear-queue';
 exports.conf = {
+    name: 'clear-queue',
     aliases: ['cq', 'clr-que'],
     permLevel: 'Moderator',
 };

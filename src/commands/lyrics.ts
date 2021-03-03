@@ -9,13 +9,12 @@ export const run: RunFunction = async (client, message, args) => {
         await client.functions.lyrics(
             client,
             args.join(' '),
-            message.settings.embedColor
-        )
+            message.settings.embedColor,
+        ),
     );
 };
-export const name: string = 'lyrics';
-
 export const conf = {
+    name: 'lyrics',
     aliases: ['ly'],
     permLevel: 'User',
 };

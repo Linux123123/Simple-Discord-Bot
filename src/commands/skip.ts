@@ -4,10 +4,12 @@ import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message) => {
     if (client.functions.musicUserCheck(client, message, true)) return;
-    let queue = client.player.getQueue(message);
-    let channel = await client.channels.fetch(message.settings.musicChannelId);
-    let msg = await (channel as TextChannel).messages.fetch(
-        message.settings.musicMsgId
+    const queue = client.player.getQueue(message);
+    const channel = await client.channels.fetch(
+        message.settings.musicChannelId,
+    );
+    const msg = await (channel as TextChannel).messages.fetch(
+        message.settings.musicMsgId,
     );
     msg.edit(client.functions.queueMessage(queue as Queue));
 
@@ -18,9 +20,8 @@ export const run: RunFunction = async (client, message) => {
             .then((msg) => msg.delete({ timeout: 3000 }));
     });
 };
-export const name: string = 'skip';
-
 export const conf = {
+    name: 'skip',
     aliases: ['sk'],
     permLevel: 'Moderator',
 };

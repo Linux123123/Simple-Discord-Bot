@@ -6,10 +6,11 @@ export interface RunFunction {
         client: Bot,
         message: Message,
         args: string[],
-        level: number
+        level: number,
     ): Promise<unknown>;
 }
 export interface confObject {
+    name: string;
     aliases: string[];
     permLevel: string;
 }
@@ -20,7 +21,6 @@ export interface helpObject {
 }
 
 export interface Command {
-    name: string;
     run: RunFunction;
     conf: confObject;
     help: helpObject;

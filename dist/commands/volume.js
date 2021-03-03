@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const run = async (client, message, args) => {
     if (client.functions.musicUserCheck(client, message, true))
         return;
     message.channel.bulkDelete(1);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!args[0] || isNaN(args[0]))
         return message.channel
             .send(`Please enter a valid number !`)
@@ -20,8 +21,8 @@ const run = async (client, message, args) => {
         .then((msg) => msg.delete({ timeout: 3000 }));
 };
 exports.run = run;
-exports.name = 'volume';
 exports.conf = {
+    name: 'volume',
     aliases: ['vol'],
     permLevel: 'Moderator',
 };

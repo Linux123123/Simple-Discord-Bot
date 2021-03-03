@@ -6,9 +6,11 @@ exports.name = 'trackStart';
 const run = async (client, message, track, queue) => {
     try {
         let song;
-        let lyricsChannel = await client.channels.fetch(message.settings.lyricsChannelId);
-        let channel = await client.channels.fetch(message.settings.musicChannelId);
-        let msg = await channel.messages.fetch(message.settings.musicMsgId);
+        const lyricsChannel = client.channels.cache.find((c) => message.settings.lyricsChannelId === c.id);
+        const channel = client.channels.cache.find((c) => message.settings.musicChannelId === c.id);
+        const msg = channel.messages.cache.find((c) => message.settings.musicMsgId === c.id);
+        if (!msg)
+            return;
         const embed = new discord_js_1.MessageEmbed()
             .setTitle(track.title)
             .setURL(track.url)
@@ -27,12 +29,13 @@ const run = async (client, message, track, queue) => {
             .setColor(message.settings.embedColor);
         msg.edit(client.functions.queueMessage(queue), embed);
         if (track.title.toLowerCase().includes('official')) {
-            let index = track.title.toLowerCase().search(/\bofficial\b/);
+            const index = track.title.toLowerCase().search(/\bofficial\b/);
             song = track.title.slice(0, index - 1).trim();
         }
         else
             song = track.title;
-        lyricsChannel.send(await client.functions.lyrics(client, song, message.settings.embedColor));
+        if (lyricsChannel)
+            lyricsChannel.send(await client.functions.lyrics(client, song, message.settings.embedColor));
     }
     catch (error) {
         client.logger(error, 'error');

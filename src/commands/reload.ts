@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message, args) => {
@@ -6,21 +7,23 @@ export const run: RunFunction = async (client, message, args) => {
     const command =
         client.commands.get(args[0])! ||
         client.commands.get(client.aliases.get(args[0])!);
-    let unLoadResponse = await client.functions.unloadCommand(client, args[0]);
+    const unLoadResponse = await client.functions.unloadCommand(
+        client,
+        args[0],
+    );
     if (unLoadResponse)
         return message.reply(`Error Unloading: ${unLoadResponse}`);
 
-    let loadResponse = await client.functions.loadCommand(
+    const loadResponse = await client.functions.loadCommand(
         client,
-        `${__dirname}/${command.name}.js`
+        `${__dirname}/${command.conf.name}.js`,
     );
     if (loadResponse) return message.reply(`Error Loading: ${loadResponse}`);
 
-    message.reply(`The command \`${command.name}\` has been reloaded`);
+    message.reply(`The command \`${command.conf.name}\` has been reloaded`);
 };
-export const name: string = 'reload';
-
 export const conf = {
+    name: 'reload',
     aliases: [],
     permLevel: 'Bot Admin',
 };

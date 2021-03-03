@@ -53,12 +53,11 @@ export const run: RunFunction = async (client, message) => {
             ],
             color: message.settings.embedColor,
             timestamp: new Date(),
-        })
+        }),
     );
 };
-export const name: string = 'stats';
-
 export const conf = {
+    name: 'stats',
     aliases: [],
     permLevel: 'User',
 };

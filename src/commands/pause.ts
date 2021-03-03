@@ -11,9 +11,8 @@ export const run: RunFunction = async (client, message) => {
         .send(`Music **Paused** !`)
         .then((msg) => msg.delete({ timeout: 3000 }));
 };
-export const name: string = 'pause';
-
 export const conf = {
+    name: 'pause',
     aliases: ['pa'],
     permLevel: 'Moderator',
 };

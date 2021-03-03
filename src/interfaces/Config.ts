@@ -1,7 +1,8 @@
 import { Message } from '../classes/Message';
+import { Filters } from 'discord-player';
 
 export interface permCheck {
-    (message: Message): boolean | undefined;
+    (message: Message): boolean;
 }
 
 export interface permObject {
@@ -15,6 +16,6 @@ export interface Config {
     admins: string[];
     support: string[];
     token: string;
-    filters: string[];
+    filters: Filters[];
     permLevels: permObject[];
 }

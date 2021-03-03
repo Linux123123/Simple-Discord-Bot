@@ -1,6 +1,6 @@
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
-export const name: string = 'channelEmpty';
+export const name = 'channelEmpty';
 
 export const run: RunFunction = async (client, message: Message) => {
     client.functions.clearBanner(client, message);

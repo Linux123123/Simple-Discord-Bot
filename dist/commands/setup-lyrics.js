@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.help = exports.conf = exports.name = exports.run = void 0;
+exports.help = exports.conf = exports.run = void 0;
 const run = async (client, message, args) => {
     if (!args[0]) {
         return message.reply('Must provide a name! (of channel to create)');
@@ -17,8 +17,8 @@ const run = async (client, message, args) => {
     });
 };
 exports.run = run;
-exports.name = 'setup-lyrics';
 exports.conf = {
+    name: 'setup-lyrics',
     aliases: [],
     permLevel: 'Administrator',
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message, args) => {
@@ -15,13 +16,12 @@ export const run: RunFunction = async (client, message, args) => {
             client.settings.set(
                 message.guild!.id,
                 channel.id,
-                'lyricsChannelId'
+                'lyricsChannelId',
             );
         });
 };
-export const name: string = 'setup-lyrics';
-
 export const conf = {
+    name: 'setup-lyrics',
     aliases: [],
     permLevel: 'Administrator',
 };

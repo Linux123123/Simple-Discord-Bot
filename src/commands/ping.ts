@@ -1,6 +1,6 @@
 import { RunFunction } from '../interfaces/Command';
 
-export const run: RunFunction = async (client, message, args, level) => {
+export const run: RunFunction = async (client, message) => {
     const embed = client.embed({
         title: '**🏓 PING!**',
         color: message.settings.embedColor,
@@ -18,9 +18,8 @@ export const run: RunFunction = async (client, message, args, level) => {
     });
     message.channel.send(embed);
 };
-export const name: string = 'ping';
-
 export const conf = {
+    name: 'ping',
     aliases: ['latency'],
     permLevel: 'User',
 };

@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = exports.name = void 0;
 exports.name = 'queueCreate';
 const run = async (client, message) => {
-    let channel = await client.channels.fetch(message.settings.musicChannelId);
-    let msg = await channel.messages.fetch(message.settings.musicMsgId);
+    const channel = await client.channels.fetch(message.settings.musicChannelId);
+    const msg = await channel.messages.fetch(message.settings.musicMsgId);
     try {
         await msg.react('⏹');
         await msg.react('⏯');
@@ -13,8 +13,8 @@ const run = async (client, message) => {
     catch (error) {
         client.logger(error, 'error');
     }
-    const filter = (reaction, user) => user.id !== message.client.user.id;
-    var musicReactCollector = msg.createReactionCollector(filter);
+    const filter = (reaction, user) => { var _a; return user.id !== ((_a = message.client.user) === null || _a === void 0 ? void 0 : _a.id); };
+    const musicReactCollector = msg.createReactionCollector(filter);
     client.player.getQueue(message).collector = musicReactCollector;
     musicReactCollector.on('collect', (reaction, user) => {
         switch (reaction.emoji.name) {
@@ -60,6 +60,5 @@ const run = async (client, message) => {
                 break;
         }
     });
-    musicReactCollector.on('end', () => { });
 };
 exports.run = run;

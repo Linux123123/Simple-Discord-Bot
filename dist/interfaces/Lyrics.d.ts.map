@@ -1,1 +1,0 @@
-{"version":3,"file":"Lyrics.d.ts","sourceRoot":"","sources":["../../src/interfaces/Lyrics.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,MAAM;IACnB,KAAK,EAAE,MAAM,CAAC;IACd,OAAO,EAAE,MAAM,CAAC;IAChB,MAAM,EAAE,MAAM,CAAC;IACf,QAAQ,EAAE,MAAM,CAAC;IACjB,GAAG,EAAE,MAAM,CAAC;CACf"}

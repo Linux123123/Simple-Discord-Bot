@@ -12,7 +12,7 @@ export const config: Config = {
     support: [],
 
     // Your Bot's Token. Available on https://discord.com/developers/applications/me
-    token: 'NzcyMjAwMzQ4NjYzNDE0Nzg2.X53NnQ.vNEmOlpHIIOPNRP-vq_SqzNOPfw',
+    token: 'TOKEN',
 
     // Filters
     filters: [

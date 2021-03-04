@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { TextChannel } from 'discord.js';
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
 
@@ -18,10 +17,10 @@ export const run: RunFunction = async (client, message: Message) => {
         return message.reply(`My prefix is \`${settings.prefix}\``);
 
     if (message.channel.id === settings.musicChannelId) {
-        if (message.content.indexOf(settings.prefix) !== 0) {
-            (message.channel as TextChannel).bulkDelete(1);
-            const args = message.content.trim();
-            client.player.play(message, args, true);
+        if (message.content.indexOf(settings.prefix) !== 0 && message.content) {
+            message.delete();
+            const song = message.content.trim();
+            client.player.play(message, song, true);
             const level = client.functions.permlevel(client, message);
             client.logger(
                 `${

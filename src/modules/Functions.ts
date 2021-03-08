@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { PlayerEvents } from 'discord-player';
 import { Guild, MessageEmbed, TextChannel } from 'discord.js';
+import { Bot } from '../classes/Client';
 import { Message } from '../classes/Message';
 import { Queue } from '../classes/Queue';
-import { Bot } from '../client/client';
 import { Command } from '../interfaces/Command';
+import { Event } from '../interfaces/Event';
 import { GuildSettings } from '../interfaces/GuildSettings';
 import { Lyrics } from '../interfaces/Lyrics';
-
-// THIS IS HERE BECAUSE SOME PEOPLE DELETE ALL THE GUILD SETTINGS
-// And then they're stuck because the default settings are also gone.
-// So if you do that, you're resetting your defaults. Congrats.
 
 export const defaultSettings: GuildSettings = {
     prefix: '!',
@@ -26,9 +23,9 @@ export const defaultSettings: GuildSettings = {
     lyricsChannelId: '',
 };
 
-export const Functions = {
+export class Functions {
     /* PERMISSION LEVEL FUNCTION */
-    permlevel: (client: Bot, message: Message): number => {
+    public permlevel(client: Bot, message: Message): number {
         let permlvl = 0;
 
         const permOrder = client.config.permLevels
@@ -36,81 +33,52 @@ export const Functions = {
             .sort((p, c) => (p.level < c.level ? 1 : -1));
 
         while (permOrder.length) {
-            const currentLevel = permOrder.shift()!;
+            const currentLevel = permOrder.shift();
+            if (!currentLevel) continue;
             if (currentLevel.check(message)) {
                 permlvl = currentLevel.level;
                 break;
             }
         }
         return permlvl;
-    },
+    }
     /* GUILD SETTINGS FUNCTION */
 
     // getSettings merges the client defaults with the guild settings. guild settings in
     // enmap should only have *unique* overrides that are different from defaults.
-    getSettings: (client: Bot, guild: Guild): GuildSettings => {
+    public getSettings(client: Bot, guild?: Guild): GuildSettings {
         client.settings.ensure('default', defaultSettings);
-        if (!guild) return client.settings.get('default')!;
+        if (!guild) return defaultSettings;
         const guildConf = client.settings.get(guild.id) || {};
-        return { ...client.settings.get('default')!, ...guildConf };
-    },
-
-    /*
-    SINGLE-LINE AWAITMESSAGE
-    const response = await client.awaitReply(msg, "Favourite Color?");
-    msg.reply(`Oh, I really love ${response} too!`);
-    */
-    awaitReply: async (
-        msg: Message,
-        question: string,
-        limit = 60000,
-    ): Promise<string> => {
-        const filter = (m: Message) => m.author.id === msg.author.id;
-        await msg.channel.send(question);
-        const collected = await msg.channel.awaitMessages(filter, {
-            max: 1,
-            time: limit,
-            errors: ['time'],
-        });
-        return collected.first()!.content;
-    },
-
-    loadCommand: async (
-        client: Bot,
-        commandName: string,
-    ): Promise<boolean | string> => {
+        return { ...defaultSettings, ...guildConf };
+    }
+    /* Loading commands */
+    public async loadCommand(client: Bot, commandName: string): Promise<void> {
         try {
-            client.logger(
-                `Loading Command: ${
-                    commandName.split('/').pop()?.split('.')[0]
-                }`,
-            );
-            const props: Command = await import(commandName);
-            client.commands.set(props.conf.name, props);
-            props.conf.aliases.forEach((alias) => {
-                client.aliases.set(alias, props.conf.name);
+            client.logger.log(`Loading Command: ${commandName}`);
+            const cmd: Command = await import(`../commands/${commandName}`);
+            client.commands.set(cmd.conf.name, cmd);
+            cmd.conf.aliases.forEach((alias) => {
+                client.aliases.set(alias, cmd.conf.name);
             });
-            return false;
         } catch (e) {
-            client.logger(
-                `Unable to load command ${commandName}: ${e}`,
-                'error',
-            );
-            return e;
+            client.logger.error(`Unable to load command ${commandName}`);
+            console.error(e);
         }
-    },
-
-    unloadCommand: async (
+    }
+    public async unloadCommand(
         client: Bot,
         commandName: string,
-    ): Promise<boolean | string> => {
+    ): Promise<boolean | string> {
         try {
-            client.logger(`Unloading Command: ${commandName}`);
+            client.logger.log(`Unloading Command: ${commandName}`);
             let command;
             if (client.commands.has(commandName)) {
                 command = client.commands.get(commandName);
             } else if (client.aliases.has(commandName)) {
-                command = client.commands.get(client.aliases.get(commandName)!);
+                command = client.commands.get(
+                    `${client.aliases.get(commandName)}`,
+                );
             }
             if (!command)
                 return `The command \`${commandName}\` doesn"t seem to exist, nor is it an alias. Try again!`;
@@ -118,33 +86,104 @@ export const Functions = {
                 require.cache[
                     require.resolve(`../commands/${command.conf.name}`)
                 ];
+            if (!mod) return `Can't find the module`;
             delete require.cache[
                 require.resolve(`../commands/${command.conf.name}.js`)
             ];
-            for (let i = 0; i < mod!.parent!.children.length; i++) {
-                if (mod!.parent!.children[i] === mod) {
-                    mod.parent!.children.splice(i, 1);
+            for (let i = 0; i < (mod.parent?.children.length || 0); i++) {
+                if (mod.parent?.children[i] === mod) {
+                    mod.parent?.children.splice(i, 1);
                     break;
                 }
             }
             return false;
         } catch (e) {
-            client.logger(
+            client.logger.error(
                 `Unable to unload command ${commandName}: ${e}`,
-                'error',
             );
+            console.error(e);
             return e;
         }
-    },
-
+    }
+    /* Loading events */
+    public async loadEvent(client: Bot, eventName: string): Promise<void> {
+        try {
+            client.logger.log(`Loading Event: ${eventName}`);
+            const event: Event = await import(`../events/client/${eventName}`);
+            client.on(eventName, event.run.bind(null, client));
+        } catch (e) {
+            client.logger.error(`Unable to load event ${eventName}`);
+            console.error(e);
+        }
+    }
+    public async loadPlayerEvent(
+        client: Bot,
+        eventName: string,
+    ): Promise<void> {
+        try {
+            client.logger.log(`Loading Player Event: ${eventName}`);
+            const event: Event = await import(`../events/player/${eventName}`);
+            client.player.on(
+                eventName as keyof PlayerEvents,
+                event.run.bind(null, client),
+            );
+        } catch (e) {
+            client.logger.error(`Unable to load Player Event ${eventName}`);
+            console.error(e);
+        }
+    }
+    /* Permission error handling */
+    public permissionError(
+        client: Bot,
+        message: Message,
+        cmd: Command,
+    ): MessageEmbed {
+        return client.embed(
+            {
+                title: 'You do not have permission to use this command.',
+                fields: [
+                    {
+                        name: '\u200b',
+                        value: `**Your permission level is ${message.author.level} (${message.author.levelName})**`,
+                    },
+                    {
+                        name: '\u200b',
+                        value: `**This command requires level ${
+                            client.levelCache[cmd.conf.permLevel]
+                        } (${cmd.conf.permLevel})**`,
+                    },
+                ],
+            },
+            message,
+        );
+    }
+    /*
+    SINGLE-LINE AWAITMESSAGE
+    const response = await client.awaitReply(msg, "Favourite Color?");
+    msg.reply(`Oh, I really love ${response} too!`);
+    */
+    public async awaitReply(
+        msg: Message,
+        question: string,
+        limit = 60000,
+    ): Promise<string> {
+        const filter = (m: Message) => m.author.id === msg.author.id;
+        await msg.channel.send(question);
+        const collected = await msg.channel.awaitMessages(filter, {
+            max: 1,
+            time: limit,
+            errors: ['time'],
+        });
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return collected.first()!.content;
+    }
     /* Music player funtcions */
-
-    musicUserCheck: (
+    public musicUserCheck(
         client: Bot,
         message: Message,
         queueNeeded: boolean,
-    ): boolean => {
-        if (!message.member!.voice.channel) {
+    ): boolean {
+        if (!message.member.voice.channel) {
             (message.channel as TextChannel).bulkDelete(1).then(() => {
                 message.channel
                     .send(`You're not in a voice channel !`)
@@ -153,9 +192,9 @@ export const Functions = {
             return true;
         }
         if (
-            message.guild!.me!.voice.channel &&
-            message.member!.voice.channel.id !==
-                message.guild!.me!.voice.channel.id
+            message.guild.me?.voice.channel &&
+            message.member.voice.channel.id !==
+                message.guild.me?.voice.channel.id
         ) {
             (message.channel as TextChannel).bulkDelete(1).then(() => {
                 message.channel
@@ -175,9 +214,8 @@ export const Functions = {
             }
         }
         return false;
-    },
-
-    clearBanner: async (client: Bot, message: Message): Promise<void> => {
+    }
+    public async clearBanner(client: Bot, message: Message): Promise<void> {
         const channel = await client.channels.fetch(
             message.settings.musicChannelId,
         );
@@ -193,27 +231,27 @@ export const Functions = {
             .setFooter(`Prefix for this server is: ${message.settings.prefix}`)
             .setColor(message.settings.embedColor);
         msg.edit('Queue:\n', embed);
-    },
+    }
 
-    queueMessage: (queue: Queue): string => {
+    public queueMessage(queue: Queue): string {
         let text = 'Queue:\n';
         for (let i = queue.tracks.length - 1; i >= 1; i--) {
             text += `${i}. ${queue.tracks[i].title}\n`;
         }
         return text;
-    },
+    }
 
-    lyrics: async (
+    public async lyrics(
         client: Bot,
         songname: string,
         embedColor: string,
-    ): Promise<MessageEmbed> => {
+    ): Promise<MessageEmbed> {
         const embed = client.embed({
             color: embedColor,
             timestamp: new Date(),
         });
         try {
-            const lyrics: Lyrics = await (
+            const lyrics: Lyrics = (
                 await import('@raflymln/musixmatch-lyrics')
             ).find(songname);
             if (lyrics.lyrics.length >= 2048) {
@@ -229,5 +267,5 @@ export const Functions = {
         } catch (e) {
             return embed.setDescription(e);
         }
-    },
-};
+    }
+}

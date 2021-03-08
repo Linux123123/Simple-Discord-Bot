@@ -20,5 +20,5 @@ export const run: RunFunction = async (client, member: GuildMember) => {
     );
     (channel as TextChannel)
         .send(welcomeMessage)
-        .catch((e) => client.logger(e, 'error'));
+        .catch((e) => client.logger.error(e));
 };

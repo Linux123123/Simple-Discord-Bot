@@ -1,8 +1,6 @@
 import { PlayerError } from 'discord-player';
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
-export const name = 'error';
-
 export const run: RunFunction = (
     client,
     error: PlayerError,
@@ -26,6 +24,7 @@ export const run: RunFunction = (
                 .then((msg) => msg.delete({ timeout: 3000 }));
             break;
         default:
-            client.logger(`Discord-player error: ${error}`, 'error');
+            client.logger.error(`Discord-player error: ${error}`);
+            console.error(error);
     }
 };

@@ -35,7 +35,7 @@ export const run: RunFunction = async (client, message, args) => {
         },
     };
 
-    client.logger(
+    client.logger.log(
         `Retrieving reddit posts on ${message.guild!.name} from r/${
             url.split('/')[4]
         }`,
@@ -43,7 +43,7 @@ export const run: RunFunction = async (client, message, args) => {
     const intervalId = setInterval(() => {
         if (client.settings.get(message.guild!.id, 'reddit') == 'false') {
             clearInterval(intervalId);
-            client.logger('Stopping reddit retrievals!');
+            client.logger.log('Stopping reddit retrievals!');
         } else {
             fetch(url, options)
                 .then((rawData) => {
@@ -115,7 +115,8 @@ export const run: RunFunction = async (client, message, args) => {
                             'false',
                             'reddit',
                         );
-                        client.logger(err, 'error');
+                        client.logger.error(`There has been an error: ${err}`);
+                        console.error(err);
                     }
                 });
         }

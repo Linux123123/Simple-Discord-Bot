@@ -3,8 +3,6 @@ import { Queue } from '../../classes/Queue';
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
-export const name = 'trackStart';
-
 export const run: RunFunction = async (
     client,
     message: Message,
@@ -56,6 +54,7 @@ export const run: RunFunction = async (
                 ),
             );
     } catch (error) {
-        client.logger(error, 'error');
+        client.logger.error(error);
+        console.error(error);
     }
 };

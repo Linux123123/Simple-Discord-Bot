@@ -1,5 +1,5 @@
 export interface GuildSettings {
-    [prefix: string]: string;
+    prefix: string;
     adminRole: string;
     modRole: string;
     embedColor: string;
@@ -10,4 +10,5 @@ export interface GuildSettings {
     musicChannelId: string;
     musicMsgId: string;
     lyricsChannelId: string;
+    [key: string]: string;
 }

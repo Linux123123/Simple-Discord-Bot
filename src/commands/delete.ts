@@ -45,7 +45,8 @@ export const run: RunFunction = async (client, message) => {
                         .then((msg) => msg.delete({ timeout: 3000 }));
                 })
                 .catch((error) => {
-                    client.logger(error, 'error');
+                    client.logger.error(`There has been an error: ${error}`);
+                    console.error(error);
                 });
         });
 };

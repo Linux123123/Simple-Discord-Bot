@@ -2,8 +2,6 @@ import { ReactionEmoji, TextChannel, User } from 'discord.js';
 import { Message } from '../../classes/Message';
 import { Queue } from '../../classes/Queue';
 import { RunFunction } from '../../interfaces/Event';
-export const name = 'queueCreate';
-
 export const run: RunFunction = async (client, message: Message) => {
     const channel = await client.channels.fetch(
         message.settings.musicChannelId,
@@ -16,7 +14,8 @@ export const run: RunFunction = async (client, message: Message) => {
         await msg.react('⏯');
         await msg.react('⏭');
     } catch (error) {
-        client.logger(error, 'error');
+        client.logger.error(error);
+        console.error(error);
     }
     const filter = (reaction: ReactionEmoji, user: User) =>
         user.id !== message.client.user?.id;
@@ -62,9 +61,10 @@ export const run: RunFunction = async (client, message: Message) => {
                 break;
 
             default:
-                reaction.users
-                    .remove(user)
-                    .catch((err) => client.logger(err, 'error'));
+                reaction.users.remove(user).catch((err) => {
+                    client.logger.error(`There has been an error: ${err}`);
+                    console.error(err);
+                });
                 break;
         }
     });

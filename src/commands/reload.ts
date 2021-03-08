@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message, args) => {
     if (!args || args.length < 1)
-        return message.reply('Must provide a command to reload. Derp.');
+        return message.reply('Must provide a command to reload!');
     const command =
-        client.commands.get(args[0])! ||
-        client.commands.get(client.aliases.get(args[0])!);
+        client.commands.get(args[0]) ||
+        client.commands.get(`${client.aliases.get(args[0])}`);
+    if (!command) return;
     const unLoadResponse = await client.functions.unloadCommand(
         client,
         args[0],
@@ -14,12 +14,10 @@ export const run: RunFunction = async (client, message, args) => {
     if (unLoadResponse)
         return message.reply(`Error Unloading: ${unLoadResponse}`);
 
-    const loadResponse = await client.functions.loadCommand(
+    await client.functions.loadCommand(
         client,
         `${__dirname}/${command.conf.name}.js`,
     );
-    if (loadResponse) return message.reply(`Error Loading: ${loadResponse}`);
-
     message.reply(`The command \`${command.conf.name}\` has been reloaded`);
 };
 export const conf = {
@@ -30,6 +28,6 @@ export const conf = {
 
 export const help = {
     category: 'System',
-    description: 'Reloads a command that"s been modified.',
+    description: `Reloads a command that's been modified.`,
     usage: 'reload [command]',
 };

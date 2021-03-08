@@ -1,14 +1,13 @@
 import { RunFunction } from '../interfaces/Command';
 
-export const run: RunFunction = async (client, message, args, level) => {
-    const friendly = client.config.permLevels.find(
-        (l: { level: number }) => l.level === level,
-    )?.name;
-    message.reply(`Your permission level is: ${level} - ${friendly}`);
+export const run: RunFunction = async (client, message) => {
+    message.reply(
+        `Your permission level is: ${message.author.level} - ${message.author.levelName}`,
+    );
 };
 export const conf = {
     name: 'mylevel',
-    aliases: [],
+    aliases: ['myperms', 'level'],
     permLevel: 'User',
 };
 

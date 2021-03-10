@@ -9,7 +9,7 @@ export const config: Config = {
     // Bot Creator, level 10 by default. Should never be anything else than then Linux123123 ID
     ownerID: '244024524289343489',
     // Your Bot's Token. Available on https://discord.com/developers/applications/me
-    token: process.env.TOKEN ? process.env.TOKEN : 'TOKEN',
+    token: process.env.TOKEN ? process.env.TOKEN : 'DCAPIKEY',
     // PERMISSION LEVEL DEFINITIONS.
     permLevels: [
         // This is the lowest permisison level, this is for non-roled users.

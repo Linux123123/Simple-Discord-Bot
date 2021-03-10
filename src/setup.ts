@@ -15,8 +15,8 @@ console.log('Setting Up Configuration...');
 console.log('Enter your discord API token: ');
 const TOKEN = reader.question('');
 
-baseConfig = baseConfig.replace('TOKEN', `${TOKEN}`);
-baseSrcConfig = baseSrcConfig.replace('TOKEN', `${TOKEN}`);
+baseConfig = baseConfig.replace('DCAPIKEY', `${TOKEN}`);
+baseSrcConfig = baseSrcConfig.replace('DCAPIKEY', `${TOKEN}`);
 
 fs.writeFileSync(`${__dirname}/config/config.js`, baseConfig);
 fs.writeFileSync(`${__dirname}/../src/config/config.ts`, baseSrcConfig);

@@ -16,7 +16,7 @@ export const run: RunFunction = async (client, message, args) => {
             client.settings.set(
                 message.guild!.id,
                 channel.id,
-                'lyricsChannelId',
+                'lyricsChannelId'
             );
         });
 };

@@ -4,7 +4,7 @@ import { RunFunction } from '../../interfaces/Event';
 export const run: RunFunction = (
     client,
     error: PlayerError,
-    message: Message,
+    message: Message
 ) => {
     client.functions.clearBanner(client, message);
     switch (error) {

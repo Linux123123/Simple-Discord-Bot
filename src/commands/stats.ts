@@ -53,7 +53,7 @@ export const run: RunFunction = async (client, message) => {
             ],
             color: message.settings.embedColor,
             timestamp: new Date(),
-        }),
+        })
     );
 };
 export const conf = {

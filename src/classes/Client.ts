@@ -1,5 +1,11 @@
 import enmap from 'enmap';
-import { Client, MessageEmbed, MessageEmbedOptions, Intents } from 'discord.js';
+import {
+    Client,
+    MessageEmbed,
+    MessageEmbedOptions,
+    Intents,
+    ReactionCollector,
+} from 'discord.js';
 import { promisify } from 'util';
 import { readdir } from 'fs';
 import { Player } from 'discord-player';
@@ -19,6 +25,7 @@ export class Bot extends Client {
     }
     public commands: enmap<string, Command> = new enmap();
     public aliases: enmap<string, string> = new enmap();
+    public reactionCollectors: enmap<string, ReactionCollector> = new enmap();
     public settings: enmap<string, GuildSettings> = new enmap('settings');
     public levelCache: { [key: string]: number } = {};
     public logger = new Logger();
@@ -31,13 +38,13 @@ export class Bot extends Client {
         const cmdFiles = await readAsyncDir(`${__dirname}/../commands`);
         const eventFiles = await readAsyncDir(`${__dirname}/../events/client/`);
         const playerEventFiles = await readAsyncDir(
-            `${__dirname}/../events/player`,
+            `${__dirname}/../events/player`
         );
         cmdFiles.forEach((cmd) =>
-            this.functions.loadCommand(this, cmd.split('.')[0]),
+            this.functions.loadCommand(this, cmd.split('.')[0])
         );
         eventFiles.forEach((event) =>
-            this.functions.loadEvent(this, event.split('.')[0]),
+            this.functions.loadEvent(this, event.split('.')[0])
         );
         playerEventFiles.forEach((eventFile: string) => {
             this.functions.loadPlayerEvent(this, eventFile.split('.')[0]);
@@ -50,7 +57,7 @@ export class Bot extends Client {
     public embed(
         data: MessageEmbedOptions,
         message?: Message,
-        embedColor = '#0000FF',
+        embedColor = '#0000FF'
     ): MessageEmbed {
         return new MessageEmbed({
             ...data,

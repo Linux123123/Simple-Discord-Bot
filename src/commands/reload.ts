@@ -9,14 +9,14 @@ export const run: RunFunction = async (client, message, args) => {
     if (!command) return;
     const unLoadResponse = await client.functions.unloadCommand(
         client,
-        args[0],
+        args[0]
     );
     if (unLoadResponse)
         return message.reply(`Error Unloading: ${unLoadResponse}`);
 
     await client.functions.loadCommand(
         client,
-        `${__dirname}/${command.conf.name}.js`,
+        `${__dirname}/${command.conf.name}.js`
     );
     message.reply(`The command \`${command.conf.name}\` has been reloaded`);
 };

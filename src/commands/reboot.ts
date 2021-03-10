@@ -4,8 +4,8 @@ export const run: RunFunction = async (client, message) => {
     await message.reply('Bot is shutting down.');
     await Promise.all(
         client.commands.map((cmd) =>
-            client.functions.unloadCommand(client, cmd.conf.name),
-        ),
+            client.functions.unloadCommand(client, cmd.conf.name)
+        )
     );
     client.destroy();
     process.exit(0);

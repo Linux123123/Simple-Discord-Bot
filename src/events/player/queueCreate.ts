@@ -1,13 +1,12 @@
 import { ReactionEmoji, TextChannel, User } from 'discord.js';
 import { Message } from '../../classes/Message';
-import { Queue } from '../../classes/Queue';
 import { RunFunction } from '../../interfaces/Event';
 export const run: RunFunction = async (client, message: Message) => {
     const channel = await client.channels.fetch(
-        message.settings.musicChannelId,
+        message.settings.musicChannelId
     );
     const msg = await (channel as TextChannel).messages.fetch(
-        message.settings.musicMsgId,
+        message.settings.musicMsgId
     );
     try {
         await msg.react('⏹');
@@ -20,7 +19,7 @@ export const run: RunFunction = async (client, message: Message) => {
     const filter = (reaction: ReactionEmoji, user: User) =>
         user.id !== message.client.user?.id;
     const musicReactCollector = msg.createReactionCollector(filter);
-    (client.player.getQueue(message) as Queue).collector = musicReactCollector;
+    client.reactionCollectors.set(message.guild.id, musicReactCollector);
     musicReactCollector.on('collect', (reaction, user) => {
         switch (reaction.emoji.name) {
             case '⏭':

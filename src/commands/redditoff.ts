@@ -11,7 +11,7 @@ export const run: RunFunction = async (client, message) => {
                     title: 'Reddit has been turned off!',
                     color: message.settings.embedColor,
                     timestamp: new Date(),
-                }),
+                })
             )
             .then((msg) => msg.delete({ timeout: 3000 }));
     });

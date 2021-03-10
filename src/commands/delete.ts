@@ -10,7 +10,7 @@ export const run: RunFunction = async (client, message) => {
     if (!amount) return message.reply('Must specify an amount to delete!');
     if (!amount && !user)
         return message.reply(
-            'Must specify a user and amount, or just an amount, of messages to purge!',
+            'Must specify a user and amount, or just an amount, of messages to purge!'
         );
     // Fetch 100 messages (will be filtered and lowered up to max amount requested)
 

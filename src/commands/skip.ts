@@ -1,18 +1,18 @@
 import { TextChannel } from 'discord.js';
-import { Queue } from '../classes/Queue';
 import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message) => {
     if (client.functions.musicUserCheck(client, message, true)) return;
     const queue = client.player.getQueue(message);
-    const channel = await client.channels.fetch(
-        message.settings.musicChannelId,
+    const channel = client.channels.cache.find(
+        (c) => c.id === message.settings.musicChannelId
     );
-    const msg = await (channel as TextChannel).messages.fetch(
-        message.settings.musicMsgId,
+    if (!channel) return;
+    const msg = (channel as TextChannel).messages.cache.find(
+        (m) => m.id === message.settings.musicMsgId
     );
-    msg.edit(client.functions.queueMessage(queue as Queue));
-
+    if (!msg) return;
+    msg.edit(client.functions.queueMessage(queue));
     client.player.skip(message);
     (message.channel as TextChannel).bulkDelete(1).then(() => {
         message.channel

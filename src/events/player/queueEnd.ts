@@ -1,7 +1,8 @@
 import { Message } from '../../classes/Message';
-import { Queue } from '../../classes/Queue';
 import { RunFunction } from '../../interfaces/Event';
 export const run: RunFunction = (client, message: Message) => {
-    (client.player.getQueue(message) as Queue).collector.stop();
+    const collector = client.reactionCollectors.get(message.guild.id);
+    if (!collector) return;
+    collector.stop();
     client.functions.clearBanner(client, message);
 };

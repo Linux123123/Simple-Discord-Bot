@@ -1,10 +1,9 @@
 import { TextChannel } from 'discord.js';
-import { Queue } from '../classes/Queue';
 import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message, args) => {
     if (client.functions.musicUserCheck(client, message, true)) return;
-    (message.channel as TextChannel).bulkDelete(1);
+    message.delete();
     if (!args[0]) {
         message.channel
             .send(`You need to provide song number in queue !`)
@@ -12,15 +11,16 @@ export const run: RunFunction = async (client, message, args) => {
         return;
     }
     const queue = client.player.getQueue(message);
-    client.channels.fetch(message.settings.musicChannelId).then((channel) => {
-        (channel as TextChannel).messages
-            .fetch(message.settings.musicMsgId)
-            .then((msg) => {
-                msg.edit(client.functions.queueMessage(queue as Queue));
-            });
-    });
+    const channel = client.channels.cache.find(
+        (c) => c.id === message.settings.musicChannelId
+    );
+    if (!channel) return;
+    const msg = (channel as TextChannel).messages.cache.find(
+        (m) => m.id === message.settings.musicMsgId
+    );
+    if (!msg) return;
+    msg.edit(client.functions.queueMessage(queue));
     client.player.remove(message, parseInt(args[0]));
-
     message.channel
         .send(`Song **removed** !`)
         .then((msg) => msg.delete({ timeout: 3000 }));

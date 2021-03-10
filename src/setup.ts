@@ -6,7 +6,7 @@ if (config.token !== 'TOKEN') process.exit(0);
 let baseConfig = fs.readFileSync(`${__dirname}/config/config.js`, 'utf8');
 let baseSrcConfig = fs.readFileSync(
     `${__dirname}/../src/config/config.ts`,
-    'utf8',
+    'utf8'
 );
 
 console.log('First Start!');

@@ -1,11 +1,15 @@
 import { Message } from '../classes/Message';
 import { Config } from '../interfaces/Config';
 
+import { config as dotenv } from 'dotenv';
+
+dotenv();
+
 export const config: Config = {
     // Bot Creator, level 10 by default. Should never be anything else than then Linux123123 ID
     ownerID: '244024524289343489',
     // Your Bot's Token. Available on https://discord.com/developers/applications/me
-    token: 'TOKEN',
+    token: process.env.TOKEN ? process.env.TOKEN : 'TOKEN',
     // PERMISSION LEVEL DEFINITIONS.
     permLevels: [
         // This is the lowest permisison level, this is for non-roled users.
@@ -30,7 +34,7 @@ export const config: Config = {
                     const modRole = message.guild?.roles.cache.find(
                         (r) =>
                             r.name.toLowerCase() ===
-                            message.settings.modRole.toLowerCase(),
+                            message.settings.modRole.toLowerCase()
                     );
                     if (modRole && message.member?.roles.cache.has(modRole.id))
                         return true;
@@ -48,7 +52,7 @@ export const config: Config = {
                     const adminRole = message.guild?.roles.cache.find(
                         (r) =>
                             r.name.toLowerCase() ===
-                            message.settings.adminRole.toLowerCase(),
+                            message.settings.adminRole.toLowerCase()
                     );
                     if (!adminRole) return false;
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

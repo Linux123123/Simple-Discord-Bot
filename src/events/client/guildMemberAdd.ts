@@ -6,17 +6,17 @@ export const run: RunFunction = async (client, member: GuildMember) => {
     // Load the guild's settings
     const settings: GuildSettings = client.functions.getSettings(
         client,
-        member.guild,
+        member.guild
     );
     // If welcome is off, don't proceed (don't welcome the user)
     if (settings.welcomeEnabled !== 'true') return;
     // Replace the placeholders in the welcome message with actual data
     const welcomeMessage = settings.welcomeMessage.replace(
         '{{user}}',
-        member.id,
+        member.id
     );
     const channel = member.guild.channels.cache.find(
-        (c) => c.name === settings.welcomeChannel,
+        (c) => c.name === settings.welcomeChannel
     );
     (channel as TextChannel)
         .send(welcomeMessage)

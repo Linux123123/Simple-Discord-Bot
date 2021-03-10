@@ -1,5 +1,4 @@
-import { Track } from 'discord-player';
-import { Queue } from '../../classes/Queue';
+import { Track, Queue } from 'discord-player';
 import { MessageEmbed, TextChannel } from 'discord.js';
 import { Message } from '../../classes/Message';
 import { RunFunction } from '../../interfaces/Event';
@@ -7,18 +6,19 @@ export const run: RunFunction = async (
     client,
     message: Message,
     track: Track,
-    queue: Queue,
+    queue: Queue
 ) => {
     try {
         let song;
         const lyricsChannel = client.channels.cache.find(
-            (c) => message.settings.lyricsChannelId === c.id,
+            (c) => message.settings.lyricsChannelId === c.id
         );
         const channel = client.channels.cache.find(
-            (c) => message.settings.musicChannelId === c.id,
+            (c) => message.settings.musicChannelId === c.id
         );
+        if (!channel) return;
         const msg = (channel as TextChannel).messages.cache.find(
-            (c) => message.settings.musicMsgId === c.id,
+            (c) => message.settings.musicMsgId === c.id
         );
         if (!msg) return;
         const embed = new MessageEmbed()
@@ -34,7 +34,7 @@ export const run: RunFunction = async (
                     name: 'Duration:',
                     value: track.duration,
                     inline: true,
-                },
+                }
             )
             .setImage(track.thumbnail)
             .setAuthor(track.author)
@@ -50,8 +50,8 @@ export const run: RunFunction = async (
                 await client.functions.lyrics(
                     client,
                     song,
-                    message.settings.embedColor,
-                ),
+                    message.settings.embedColor
+                )
             );
     } catch (error) {
         client.logger.error(error);

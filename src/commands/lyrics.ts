@@ -9,8 +9,8 @@ export const run: RunFunction = async (client, message, args) => {
         await client.functions.lyrics(
             client,
             args.join(' '),
-            message.settings.embedColor,
-        ),
+            message.settings.embedColor
+        )
     );
 };
 export const conf = {

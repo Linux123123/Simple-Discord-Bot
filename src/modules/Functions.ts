@@ -1,12 +1,11 @@
-import { PlayerEvents } from 'discord-player';
+import { PlayerEvents, Queue } from 'discord-player';
 import { Guild, MessageEmbed, TextChannel } from 'discord.js';
 import { Bot } from '../classes/Client';
 import { Message } from '../classes/Message';
-import { Queue } from '../classes/Queue';
 import { Command } from '../interfaces/Command';
 import { Event } from '../interfaces/Event';
 import { GuildSettings } from '../interfaces/GuildSettings';
-import { Lyrics } from '../interfaces/Lyrics';
+import { Lyrics } from './Lyrics';
 
 export const defaultSettings: GuildSettings = {
     prefix: '!',
@@ -68,7 +67,7 @@ export class Functions {
     }
     public async unloadCommand(
         client: Bot,
-        commandName: string,
+        commandName: string
     ): Promise<boolean | string> {
         try {
             client.logger.log(`Unloading Command: ${commandName}`);
@@ -77,7 +76,7 @@ export class Functions {
                 command = client.commands.get(commandName);
             } else if (client.aliases.has(commandName)) {
                 command = client.commands.get(
-                    `${client.aliases.get(commandName)}`,
+                    `${client.aliases.get(commandName)}`
                 );
             }
             if (!command)
@@ -99,7 +98,7 @@ export class Functions {
             return false;
         } catch (e) {
             client.logger.error(
-                `Unable to unload command ${commandName}: ${e}`,
+                `Unable to unload command ${commandName}: ${e}`
             );
             console.error(e);
             return e;
@@ -118,14 +117,14 @@ export class Functions {
     }
     public async loadPlayerEvent(
         client: Bot,
-        eventName: string,
+        eventName: string
     ): Promise<void> {
         try {
             client.logger.log(`Loading Player Event: ${eventName}`);
             const event: Event = await import(`../events/player/${eventName}`);
             client.player.on(
                 eventName as keyof PlayerEvents,
-                event.run.bind(null, client),
+                event.run.bind(null, client)
             );
         } catch (e) {
             client.logger.error(`Unable to load Player Event ${eventName}`);
@@ -136,7 +135,7 @@ export class Functions {
     public permissionError(
         client: Bot,
         message: Message,
-        cmd: Command,
+        cmd: Command
     ): MessageEmbed {
         return client.embed(
             {
@@ -154,7 +153,7 @@ export class Functions {
                     },
                 ],
             },
-            message,
+            message
         );
     }
     /*
@@ -165,7 +164,7 @@ export class Functions {
     public async awaitReply(
         msg: Message,
         question: string,
-        limit = 60000,
+        limit = 60000
     ): Promise<string> {
         const filter = (m: Message) => m.author.id === msg.author.id;
         await msg.channel.send(question);
@@ -181,7 +180,7 @@ export class Functions {
     public musicUserCheck(
         client: Bot,
         message: Message,
-        queueNeeded: boolean,
+        queueNeeded: boolean
     ): boolean {
         if (!message.member.voice.channel) {
             (message.channel as TextChannel).bulkDelete(1).then(() => {
@@ -217,16 +216,16 @@ export class Functions {
     }
     public async clearBanner(client: Bot, message: Message): Promise<void> {
         const channel = await client.channels.fetch(
-            message.settings.musicChannelId,
+            message.settings.musicChannelId
         );
         const msg = await (channel as TextChannel).messages.fetch(
-            message.settings.musicMsgId,
+            message.settings.musicMsgId
         );
 
         const embed = new MessageEmbed()
             .setTitle('No song playing currently')
             .setImage(
-                'https://bestbots.today/wp-content/uploads/2020/04/Music.png',
+                'https://bestbots.today/wp-content/uploads/2020/04/Music.png'
             )
             .setFooter(`Prefix for this server is: ${message.settings.prefix}`)
             .setColor(message.settings.embedColor);
@@ -244,16 +243,14 @@ export class Functions {
     public async lyrics(
         client: Bot,
         songname: string,
-        embedColor: string,
+        embedColor: string
     ): Promise<MessageEmbed> {
         const embed = client.embed({
             color: embedColor,
             timestamp: new Date(),
         });
         try {
-            const lyrics: Lyrics = (
-                await import('@raflymln/musixmatch-lyrics')
-            ).find(songname);
+            const lyrics = await new Lyrics().find(songname);
             if (lyrics.lyrics.length >= 2048) {
                 embed.addField('⠀', lyrics.lyrics.slice(2030));
                 lyrics.lyrics = lyrics.lyrics.slice(0, 2030);

@@ -22,16 +22,12 @@ export const run: RunFunction = async (client, message, args) => {
             client.settings.set(
                 message.guild!.id,
                 channel.id,
-                'musicChannelId',
+                'musicChannelId'
             );
             channel
                 .send('Queue:\n', embed)
                 .then((msg) =>
-                    client.settings.set(
-                        message.guild!.id,
-                        msg.id,
-                        'musicMsgId',
-                    ),
+                    client.settings.set(message.guild!.id, msg.id, 'musicMsgId')
                 );
         });
 };

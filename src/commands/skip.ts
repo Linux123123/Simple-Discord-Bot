@@ -4,13 +4,11 @@ import { RunFunction } from '../interfaces/Command';
 export const run: RunFunction = async (client, message) => {
     if (client.functions.musicUserCheck(client, message, true)) return;
     const queue = client.player.getQueue(message);
-    const channel = client.channels.cache.find(
-        (c) => c.id === message.settings.musicChannelId
-    );
+    const channel = (await client.channels.fetch(
+        message.settings.musicChannelId
+    )) as TextChannel;
     if (!channel) return;
-    const msg = (channel as TextChannel).messages.cache.find(
-        (m) => m.id === message.settings.musicMsgId
-    );
+    const msg = await channel.messages.fetch(message.settings.musicMsgId);
     if (!msg) return;
     msg.edit(client.functions.queueMessage(queue));
     client.player.skip(message);

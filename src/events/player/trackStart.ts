@@ -9,16 +9,18 @@ export const run: RunFunction = async (
     queue: Queue
 ) => {
     try {
-        let song;
-        const lyricsChannel = client.channels.cache.find(
-            (c) => message.settings.lyricsChannelId === c.id
-        );
-        const channel = client.channels.cache.find(
-            (c) => message.settings.musicChannelId === c.id
-        );
-        if (!channel) return;
-        const msg = (channel as TextChannel).messages.cache.find(
-            (c) => message.settings.musicMsgId === c.id
+        let song = '';
+        const lyricsChannel = (await client.channels.fetch(
+            message.settings.lyricsChannelId,
+            true
+        )) as TextChannel;
+        const channel = (await client.channels.fetch(
+            message.settings.musicChannelId,
+            true
+        )) as TextChannel;
+        const msg = await channel.messages.fetch(
+            message.settings.musicMsgId,
+            true
         );
         if (!msg) return;
         const embed = new MessageEmbed()
@@ -46,7 +48,7 @@ export const run: RunFunction = async (
             song = track.title.slice(0, index - 1).trim();
         } else song = track.title;
         if (lyricsChannel)
-            (lyricsChannel as TextChannel).send(
+            lyricsChannel.send(
                 await client.functions.lyrics(
                     client,
                     song,
@@ -54,7 +56,7 @@ export const run: RunFunction = async (
                 )
             );
     } catch (error) {
-        client.logger.error(error);
+        client.logger.error(`An error has accured: ${error}`);
         console.error(error);
     }
 };

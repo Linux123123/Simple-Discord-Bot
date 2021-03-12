@@ -14,22 +14,22 @@ export const run: RunFunction = async (client, message: Message) => {
     if (message.content.match(prefixMention))
         return message.reply(`My prefix is \`${settings.prefix}\``);
 
-    if (message.channel.id === settings.musicChannelId) {
-        if (message.content.indexOf(settings.prefix) !== 0 && message.content) {
-            message.delete();
-            const song = message.content.trim();
-            client.player.play(message, song, true);
-            const level = client.functions.permlevel(client, message);
-            client.logger.log(
-                `${
-                    client.config.permLevels.find((l) => l.level === level)
-                        ?.name
-                } ${message.author.username} (${
-                    message.author.id
-                }) ran command play`,
-                'cmd'
-            );
-        }
+    if (
+        message.channel.id === settings.musicChannelId &&
+        message.content.indexOf(settings.prefix) !== 0
+    ) {
+        await message.delete();
+        if (!message.content) return;
+        const song = message.content.trim();
+        await client.player.play(message, song, true);
+        const level = client.functions.permlevel(client, message);
+        client.logger.log(
+            `${client.config.permLevels.find((l) => l.level === level)?.name} ${
+                message.author.username
+            } (${message.author.id}) ran command play`,
+            'cmd'
+        );
+        return;
     }
 
     if (message.content.indexOf(settings.prefix) !== 0) return; // Ignore without prefix

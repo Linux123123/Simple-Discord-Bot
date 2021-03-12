@@ -14,7 +14,7 @@ export const run: RunFunction = async (client, message, args) => {
         return;
     }
     (message.channel as TextChannel).bulkDelete(1);
-    client.player.play(message, args.join(' '), true);
+    await client.player.play(message, args.join(' '), true);
 };
 export const conf = {
     name: 'play',

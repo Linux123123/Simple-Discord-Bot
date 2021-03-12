@@ -1,7 +1,7 @@
 import { RunFunction } from '../interfaces/Command';
 
 export const run: RunFunction = async (client, message) => {
-    const role = message.guild.roles.cache.find((r) => r.name === 'secretas');
+    const role = message.guild.roles.cache.find((r) => r.name === 'kolegos');
     if (!role) return;
     message.member.roles.add(role);
 };

@@ -16,6 +16,7 @@ import { Functions } from '../modules/Functions';
 import { GuildSettings } from '../interfaces/GuildSettings';
 import { Message } from './Message';
 import { handleExceptions } from '../modules/handleExceptions';
+import { Reddit } from '../modules/Reddit';
 
 const readAsyncDir = promisify(readdir);
 
@@ -26,6 +27,7 @@ export class Bot extends Client {
     public commands: enmap<string, Command> = new enmap();
     public aliases: enmap<string, string> = new enmap();
     public reactionCollectors: enmap<string, ReactionCollector> = new enmap();
+    public reddit: enmap<string, Reddit> = new enmap();
     public settings: enmap<string, GuildSettings> = new enmap('settings');
     public levelCache: { [key: string]: number } = {};
     public logger = new Logger();

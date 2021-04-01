@@ -25,7 +25,7 @@ export const run: RunFunction = async (client, message, args) => {
             await new Reddit(
                 client,
                 message.channel as TextChannel,
-                command,
+                args[0],
                 message.settings
             ).start();
             break;
